@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        
+        
+        <title>INTERACTIVE PIE CHART</title>
+        <style>
+            *{
+                /*transition: all 0.5s ease;*/
+            }
+        </style>
+    </head>
+
+<body ng-app="chart">
+<div style="position: absolute; width: 500px; height: 500px; background-color: red; left:0px; top:0px;">
+	<pie-chart colors="FF0000,00FF00,0000FF" myvalue="{{showValue}}" id="myChart1" chartid="chart1" style="position:absolute; left:0px; top:100px;"></pie-chart> 
+    
+    <input type="button" name="addSlide" onclick="addSlideFunc()" value="Javascript Add button" /> 
+</div>
+
+<script type="text/javascript">
+   function addSlideFunc(){
+    //angular.element(document.getElementById('myChart1')).scope().addSlice();
+
+    var scope = angular.element(document.getElementById("myChart1")).scope();
+    scope.$apply(function () {
+        scope.addSlice();
+    });
+   }
+</script>
+
+    <script type="text/javascript" src="js/lib/angular.min.js"></script>	
+    <script type="text/javascript" src="js/lib/jquery-1.9.1.js"></script>    
+    <script type="text/javascript" src="js/lib/jquery-ui.js"></script>
+    <!--<script type="text/javascript" src="minified_file/js/minified_file/base.min.js"></script>-->
+    <script type="text/javascript" src="js/all_minified_flies/mathLogic.min.js"></script>
+    <script type="text/javascript" src="js/all_minified_flies/basicLogic.min.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,82 @@
+/* Converter link to css 
+	http://lesscss.org/less-preview/
+*/
+body {
+  background-color: #363636;
+  font-family:Verdana, Geneva, sans-serif;
+  padding: 0px;
+  margin: 0px;
+  //overflow:hidden;
+}
+* {     
+  padding: 0px;
+  margin: 0px;
+	-webkit-user-select: none;  /* Chrome all / Safari all */
+	-moz-user-select: none;     /* Firefox all */
+	-ms-user-select: none;      /* IE 10+ */
+	user-select: none;          /* Likely future */ 
+}
+ input[type="text"]{  
+  -webkit-user-select: text;  /* Chrome all / Safari all */
+  -moz-user-select: text;     /* Firefox all */
+  -ms-user-select: text;      /* IE 10+ */
+  user-select: text;          /* Likely future */ 
+  width:160px;
+  height:22px;
+  font-size:14px;
+}
+#piechartController {
+  width: 650px;
+  margin: 0px auto;
+  top:100px;
+  position: relative;
+}
+#mainContainer {
+  position: relative;
+}
+.sliceBorder {
+  transform-origin: 0px 7.5px 0px;
+  position: absolute;
+  cursor: pointer;
+  height:15px;
+}
+svg {
+  position: absolute;
+  top: 0px;
+  z-index: -1;
+}
+#debug {
+  position: absolute;
+  width: 200px;
+  height: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  left: -200px;
+}
+#legend{
+	left:350px;
+	top:12px;
+	width:350px;
+	position:relative;
+}
+.circle {width: 10px; height: 10px; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; display:inline-block; }
+.data{
+	width:100%;
+	color:white; 
+	font-size:14px;
+	margin-bottom:10px;
+}
+.legendDataClass{
+	max-width:270px;
+	overflow:hidden;
+	display:inline-block;
+	font-size:14px;
+	position:relative;
+	top:3px;
+}
+#dummyDiv{
+	position:relative;
+	width:1024px;
+	height:768px;
+	margin:0px auto;
+}

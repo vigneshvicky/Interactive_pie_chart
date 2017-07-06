@@ -1,0 +1,5 @@
+open npm and go to specified folder
+
+npm adduser - This will ask username, password and mail id.
+git push -u origin master - to push all the files from local to git.
+npm install interactive-pie-chart - to download all the files from git.

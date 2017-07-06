@@ -35,22 +35,38 @@ angular
 				template:"<div style=\"position:relative;\">"+
 						"<svg height=\"202\" width=\"202\">"+
                             "<circle cx=\"101\" cy=\"101\" r=\"100\" fill=\"#AABBCC\"/>"+
-                            "<g ng-repeat=\"arr in colorsData track by $index\" id=\"{{mychartid}}_stick_{{$index}}\" transform =\"translate(101,101) {{percent.length?someFunc(percent[$index]):getStyle($index)}}\" fill=\"none\" style=\"cursor:pointer;\" ng-mousedown=\"startMoveSlice($event)\">"+
+                            "<g ng-repeat=\"arr in colorsData track by $index\" custAttr=\"{{sampleFunc($index)}}\" id=\"{{mychartid}}_stick_{{$index}}\" transform =\"translate(101,101) {{percent.length?someFunc(percent[$index]):getStyle($index)}}\" fill=\"none\" style=\"cursor:pointer;\" ng-mousedown=\"startMoveSlice($event)\">"+
                                 "<rect x=\"0\" y=\"-5\" width=\"100\" height=\"10\" style=\"fill:blue; fill-opacity:0.1;\"></rect>"+
                                 "<line stroke=\"#FFFFFF\" stroke-width=\"2\" x1=\"0\" y1=\"0\" x2=\"100\" y2=\"0\" />"+
-                            "</g>"+                            
-                            "<circle cx=\"101\" cy=\"101\" r=\"10\" stroke=\"\" stroke-width=\"0\" fill=\"white\" />"+
-                            "<circle cx=\"101\" cy=\"101\" r=\"100\" stroke-width=\"1\" stroke=\"black\" fill=\"none\"/>"+
-                        "</svg>"+                        
+                            "</g>"+
+                            "<circle cx=\"101\" cy=\"101\" r=\"10\" fill=\"white\" />"+
+                            "<circle cx=\"101\" cy=\"101\" r=\"100\" stroke-width=\"2\" stroke=\"white\" fill=\"none\"/>"+
+                        "</svg>"+
         			"</div>"
 			}
 		}).controller("Ctrl",["$scope","mathLogics",function($scope,mathLogics){
 //"M"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY+" L"+currentSlicePosition.left+","+currentSlicePosition.top+" A"+mathLogics.basicLogics.radius+","+mathLogics.basicLogics.radius+",0,"+(angleDiff>180?1:0)+",1,"+nextSlicePosition.left+","+nextSlicePosition.top+" L"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY+" A0,0,0,1,0,"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY;
 			//M180,190 L316.3854163570603,127.55788116093981 A150,150,0,0,1,258.37478470739234,317.89602465311384 L180,190 A0,0,0,1,0,180,190
-			console.log($scope.colors+" : my colors");
+			//console.log($scope.colors+" : my colors");
+
+			$scope.someFunc = function(val){				
+                 return "rotate("+(val-0)+",0,0)";
+            }
+			$scope.getStyle = function(val){
+				console.log("rotate("+(((360/$scope.totalSlice)*val)-0)+",0,0)");
+				//translate(100, 100) rotate(45 0 0)
+				//return { left:"100px", top:"100px",position:"absolute",width:"100px",height:"5px","background-color":"#"+color, "transform-origin":"center left",transform: "rotate("+(((360/$scope.totalSlice)*val)-90)+"deg)"};
+				//$($scope.directiveElement).find("g").eq(val)..attr({'transform': 'translate(101,101) rotate('+(((360/$scope.totalSlice)*val)-0)+' 0,0)'});
+				return "rotate("+(((360/$scope.totalSlice)*val)-0)+",0,0)";
+			}
+
+			$scope.sampleFunc = function(indx){
+				//console.log(indx+" sample func")
+				return indx+":"+$scope.totalSlice;
+			}
 			$scope.showValue = "Success attribute"
 			$scope.getArrayValue = function(val){
-				console.log(val+" : getArrayValue")
+				//console.log(val+" : getArrayValue")
 				return val;
 			}
 			$scope.testingValue = "Success";
@@ -71,21 +87,16 @@ angular
 				//$("#test_dot").css({left:evt.clientX+"px",top:evt.clientY+"px"});
 				currentIdNum = mathLogics.basicLogics.getNumber($(mathLogics.basicLogics.currentSlice).attr("id"));
 				var curAngle = mathLogics.getAngle(curPos.posX,curPos.posY);
-				$(mathLogics.basicLogics.currentSlice).attr({'transform': 'translate(101,101) rotate('+curAngle+' 0,0)'});
+				$(mathLogics.basicLogics.currentSlice).attr({'transform': 'translate(101,101) rotate('+curAngle+',0,0)'});
 
 				
 			}
+			/*$scope.sampleFunc = function(indx){
+				console.log(indx+" sample func")
+				$($scope.directiveElement).find("g").eq(indx).attr({'transform': 'translate(101,101) rotate('+(((360/$scope.totalSlice)*indx)-0)+' 0,0)'});
+				return indx+":"+indx;
+			}*/
 			
-			$scope.someFunc = function(val){
-				
-                 return "rotate("+(val-0)+" 0 0)";
-            }
-			$scope.getStyle = function(val){
-				console.log("getStyle function : "+val);
-				//translate(100, 100) rotate(45 0 0)
-				//return { left:"100px", top:"100px",position:"absolute",width:"100px",height:"5px","background-color":"#"+color, "transform-origin":"center left",transform: "rotate("+(((360/$scope.totalSlice)*val)-90)+"deg)"};
-				return "rotate("+(((360/$scope.totalSlice)*val)-0)+" 0 0)";
-			}
 			$scope.get_imageURL = function(){
 				return $scope.imageURL;
 			}

@@ -29,7 +29,6 @@ class MathLogic{
 		}else{
 			_midAngle = (_angle1+(_angle2-_angle1)/2);
 		}
-
 		return _midAngle;
 	}	
 	public getPositionByAngle(_ang:number, _radius=this.basicLogics.radius):Object{

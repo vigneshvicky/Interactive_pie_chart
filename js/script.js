@@ -48,8 +48,7 @@ angular
 			//M180,190 L316.3854163570603,127.55788116093981 A150,150,0,0,1,258.37478470739234,317.89602465311384 L180,190 A0,0,0,1,0,180,190
 			//console.log($scope.colors+" : my colors");
 
-			$scope.someFunc = function(val){
-				
+			$scope.someFunc = function(val){				
                  return "rotate("+(val-0)+",0,0)";
             }
 			$scope.getStyle = function(val){

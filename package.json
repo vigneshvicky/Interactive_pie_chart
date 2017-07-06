@@ -1,8 +1,7 @@
 {
-    "name" : "InteractivePiechart",
+    "name" : "interactive-pie-chart",
     "version" : "0.1.0",
-    "author" : "Vigneshwaran",
-    "private" : true,
+    "author" : "Vigneshwaran",   
 
     "devDependencies" : {
         "grunt" :                       "~0.4.0",

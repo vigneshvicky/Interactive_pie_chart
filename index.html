@@ -10,8 +10,8 @@
     </head>
 
 <body ng-app="chart">
-<div style="position: absolute; width: 500px; height: 500px; background-color: red; left:0px; top:0px;">
-	<pie-chart colors="FF0000,00FF00,0000FF,000000" myvalue="{{showValue}}" id="myChart1" chartid="chart1" style="position:absolute; left:0px; top:100px;" ng-mouseup="stopMove()"></pie-chart> 
+<div style="position: absolute; width: 500px; height: 500px; left:0px; top:0px;">
+	<pie-chart colors="DC3912,FF9900,109618,990099,00FF00" radius = "100" myvalue="{{showValue}}" id="myChart1" chartid="chart1" style="position:absolute; left:0px; top:100px;" ng-mouseup="stopMove()"></pie-chart> 
     
     <input type="button" name="addSlide" onclick="addSlideFunc()" value="Javascript Add button" /> 
 </div>
@@ -31,8 +31,8 @@
     <script type="text/javascript" src="js/lib/jquery-1.9.1.js"></script>    
     <script type="text/javascript" src="js/lib/jquery-ui.js"></script>
     <!--<script type="text/javascript" src="minified_file/js/minified_file/base.min.js"></script>-->
-    <script type="text/javascript" src="minified_flies/MathLogic.js"></script>
-    <script type="text/javascript" src="minified_flies/BasicLogic.js"></script>
+    <script type="text/javascript" src="js/MathLogic.js"></script>
+    <script type="text/javascript" src="js/BasicLogic.js"></script>
     <script type="text/javascript" src="js/script.js"></script>
     
 </body>

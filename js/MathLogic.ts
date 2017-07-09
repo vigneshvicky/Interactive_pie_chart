@@ -2,14 +2,18 @@
 class MathLogic{
 	private PI = Math.PI;
 	private _isRotateClockWise:boolean;
+	public scopeObject:any;
 	public basicLogics:BasicLogic = new BasicLogic();
 	constructor(){}
-	
-	public getAngle(_currX:number,_currY:number):number{
-		let distX = _currX-this.basicLogics.chartMidX;
-		let distY = _currY-this.basicLogics.chartMidY;
+	public setScope(scopeObj:any){
+		this.scopeObject = scopeObj;		
+	}
+	public getAngle(_currX:number,_currY:number,midX:number,midY:number):number{
+		let distX = _currX-midX;
+		let distY = _currY-midY;
 		return this.convertToDegree(Math.atan2(distY,distX));
 	}
+	
 	public getDistance(_x:number,_y:number):number{
 		return Math.sqrt(_x*_x+_y*_y);
 	}
@@ -29,12 +33,14 @@ class MathLogic{
 		}else{
 			_midAngle = (_angle1+(_angle2-_angle1)/2);
 		}
+
 		return _midAngle;
 	}	
-	public getPositionByAngle(_ang:number, _radius=this.basicLogics.radius):Object{
+	public getPositionByAngle(_ang:number, _radius=this.basicLogics.radius,midX:number=this.basicLogics.chartMidX,midY:number=this.basicLogics.chartMidY):Object{
+		
 		let _theta = this.convertToRadian(_ang);
-		let leftPos = this.basicLogics.chartMidX+Math.cos(_theta)*_radius;
-		let topPos = this.basicLogics.chartMidY+Math.sin(_theta)*_radius;
+		let leftPos = midX+Math.cos(_theta)*_radius;
+		let topPos = midY+Math.sin(_theta)*_radius;
 
 		return {left:leftPos,top:topPos};
 	}

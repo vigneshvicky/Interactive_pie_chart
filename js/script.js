@@ -1,4 +1,3 @@
-(function(){
 angular
 .module("chart",[])        
 	.directive("pieChart",function(){
@@ -27,6 +26,7 @@ angular
 					$scope.colorsData = $scope.colors.split(",");
 					//$scope.totalSlice = $scope.colorsData.length;
 
+
 					if($scope.percentage){
 						var tempArr = $scope.percentage.split(",");
 						var tempVal = 0;
@@ -41,7 +41,6 @@ angular
 					}
 					
 					$scope.setXPos;
-					$scope.theta="0";
 				},
 				template:"<div style=\"position:relative;\">"+
 							"<svg height=\"{{radius*2+border_thickness}}\" width=\"{{radius*2+border_thickness}}\">"+
@@ -66,14 +65,18 @@ angular
 			//$scope.curAngle = 0;
 			//mathLogics.basicLogics.totalSlice = $scope.totalSlice;
 			//mathLogics.basicLogics.chartMidY = $scope.radius;
+			$scope.getdetails = function(){
+				console.log("caling");
+			}
 			$scope.doInitialSetup = function(){
-				mathLogics.basicLogics.radius = $scope.radius;
-				mathLogics.basicLogics.totalSlice = $scope.colorsData.length;
-				$scope.totalSlice = mathLogics.basicLogics.totalSlice;
-				mathLogics.basicLogics.chartMidX = $scope.radius+$scope.half_border_thickness;
-				mathLogics.basicLogics.chartMidY = $scope.radius+$scope.half_border_thickness;
-				for(var i=0;i<mathLogics.basicLogics.totalSlice;i++){
-					$scope.default_angles[i] = (360/mathLogics.basicLogics.totalSlice)*i;
+				//mathLogics.basicLogics.radius = $scope.radius;
+				//mathLogics.basicLogics.totalSlice = $scope.colorsData.length;
+				mathLogics.setScope ($scope);
+				$scope.totalSlice = $scope.colorsData.length;//mathLogics.basicLogics.totalSlice;
+				$scope.chartMidX  = $scope.radius+$scope.half_border_thickness;
+				$scope.chartMidY = $scope.radius+$scope.half_border_thickness;
+				for(var i=0;i<$scope.totalSlice;i++){
+					$scope.default_angles[i] = (360/$scope.totalSlice)*i;
 				}
 			}
 			$scope.someFunc = function(val){
@@ -90,24 +93,27 @@ angular
 				//$scope.theta = "translate(101,101) rotate("+(((360/$scope.totalSlice)*val)-0)+",0,0)"
 				return val+":";
 			}
-			$scope.startMoveSlice = function(evt){				
+			$scope.startMoveSlice = function(evt){	
+				mathLogics.setScope ($scope);
+				//console.log("Radius of current pie chart : "+$scope.radius);			
 				mathLogics.basicLogics.setCurrentSlice(evt.currentTarget);
 
-				$document.on('mousemove', mMove);
-				$document.on('mouseup', stopMove);
+				//$document.on('mousemove', mMove);
+				//$document.on('mouseup', stopMove);
 
 				//console.log($( ".pie_slice" ).index( $(evt.currentTarget) ) );
 			}
+
 			stopMove = function(){
-				console.log("stopMove");
-				$document.off('mousemove', mMove);
-				$document.off('mouseup', stopMove);
+				console.log("stop move"+$scope.radius);
+				//$document.off('mousemove', mMove);
+				//$document.off('mouseup', stopMove);
 			}
-			mMove = function(evt){
+			$scope.mMove = function(evt){
 				var curPos = mathLogics.getCurrentMousePosition(evt,$(mathLogics.basicLogics.currentSlice).parent());
 				//$("#test_dot").css({left:evt.clientX+"px",top:evt.clientY+"px"});
 				currentIdNum = mathLogics.basicLogics.getNumber($(mathLogics.basicLogics.currentSlice).attr("id"));
-				var curAngle = mathLogics.getAngle(curPos.posX,curPos.posY);
+				var curAngle = mathLogics.getAngle(curPos.posX,curPos.posY,($scope.radius+$scope.half_border_thickness),($scope.radius+$scope.half_border_thickness));
 				$(mathLogics.basicLogics.currentSlice).attr({'transform': "translate("+($scope.radius+$scope.half_border_thickness)+","+($scope.radius+$scope.half_border_thickness)+") rotate("+(curAngle-0)+",0,0)"});
 				//$scope.theta = 'translate(101,101) rotate('+$scope.curAngle+',0,0)';
 				
@@ -151,9 +157,9 @@ angular
 			drawSlice(previousIdNum,previousElementPos,currentPosition,prev_curr_angle);*/
 			}
 			
-			drawSlice = function(sliceId, fromPos, toPos, angleDiff){
+			/*drawSlice = function(sliceId, fromPos, toPos, angleDiff){
 				$("#slice"+sliceId).attr("d","M"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY+" L"+fromPos.left+","+fromPos.top+" A"+mathLogics.basicLogics.radius+","+mathLogics.basicLogics.radius+",0,"+(angleDiff>180?1:0)+",1,"+toPos.left+","+toPos.top+" L"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY+" A0,0,0,0,0,"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY);
-			}	
+			}*/	
 			$scope.addSlice = function(){
 				//$($scope.directiveElement).find("g").eq(0).css("display","none");
 				$scope.colorsData.push("FF00FF");				
@@ -162,13 +168,11 @@ angular
 				//angular.element(mathLogics.basicLogics.currentSlice).attr({'transform': 'translate(101,101) rotate('+$scope.curAngle+',0,0)'});
 			}
 			$scope.generateSlice = function(curAngle,id){
-				
-				var nextId = (id==(mathLogics.basicLogics.totalSlice-1))?-1:id;
-				var currentSlicePosition = mathLogics.getPositionByAngle(curAngle);
-				var nextSlicePosition = mathLogics.getPositionByAngle($scope.default_angles[nextId+1]);
-				var angleDiff = mathLogics.getDifference($scope.default_angles[id==(mathLogics.basicLogics.totalSlice-1)?0:(id+1)],curAngle);
-				return "M"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY+" L"+currentSlicePosition.left+","+currentSlicePosition.top+" A"+mathLogics.basicLogics.radius+","+mathLogics.basicLogics.radius+",0,"+(angleDiff>180?1:0)+",1,"+nextSlicePosition.left+","+nextSlicePosition.top+" L"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY+" A0,0,0,1,0,"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY;
+				var nextId = (id==($scope.totalSlice-1))?-1:id;
+				var currentSlicePosition = mathLogics.getPositionByAngle(curAngle,$scope.radius,($scope.radius+$scope.half_border_thickness),($scope.radius+$scope.half_border_thickness));
+				var nextSlicePosition = mathLogics.getPositionByAngle($scope.default_angles[nextId+1],$scope.radius,($scope.radius+$scope.half_border_thickness),($scope.radius+$scope.half_border_thickness));
+				var angleDiff = mathLogics.getDifference($scope.default_angles[id==($scope.totalSlice-1)?0:(id+1)],curAngle);
+				return "M"+($scope.radius+$scope.half_border_thickness)+","+($scope.radius+$scope.half_border_thickness)+" L"+currentSlicePosition.left+","+currentSlicePosition.top+" A"+$scope.radius+","+$scope.radius+",0,"+(angleDiff>180?1:0)+",1,"+nextSlicePosition.left+","+nextSlicePosition.top+" L"+($scope.radius+$scope.half_border_thickness)+","+($scope.radius+$scope.half_border_thickness)+" A0,0,0,1,0,"+($scope.radius+$scope.half_border_thickness)+","+($scope.radius+$scope.half_border_thickness);
 				
 			}
 		}]).value("mathLogics",new MathLogic());
-	})();

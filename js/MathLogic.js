@@ -4,9 +4,12 @@ var MathLogic = (function () {
         this.PI = Math.PI;
         this.basicLogics = new BasicLogic();
     }
-    MathLogic.prototype.getAngle = function (_currX, _currY) {
-        var distX = _currX - this.basicLogics.chartMidX;
-        var distY = _currY - this.basicLogics.chartMidY;
+    MathLogic.prototype.setScope = function (scopeObj) {
+        this.scopeObject = scopeObj;
+    };
+    MathLogic.prototype.getAngle = function (_currX, _currY, midX, midY) {
+        var distX = _currX - midX;
+        var distY = _currY - midY;
         return this.convertToDegree(Math.atan2(distY, distX));
     };
     MathLogic.prototype.getDistance = function (_x, _y) {
@@ -31,11 +34,13 @@ var MathLogic = (function () {
         }
         return _midAngle;
     };
-    MathLogic.prototype.getPositionByAngle = function (_ang, _radius) {
+    MathLogic.prototype.getPositionByAngle = function (_ang, _radius, midX, midY) {
         if (_radius === void 0) { _radius = this.basicLogics.radius; }
+        if (midX === void 0) { midX = this.basicLogics.chartMidX; }
+        if (midY === void 0) { midY = this.basicLogics.chartMidY; }
         var _theta = this.convertToRadian(_ang);
-        var leftPos = this.basicLogics.chartMidX + Math.cos(_theta) * _radius;
-        var topPos = this.basicLogics.chartMidY + Math.sin(_theta) * _radius;
+        var leftPos = midX + Math.cos(_theta) * _radius;
+        var topPos = midY + Math.sin(_theta) * _radius;
         return { left: leftPos, top: topPos };
     };
     MathLogic.prototype.getPositionByElement = function (_ele) {
@@ -86,15 +91,11 @@ var MathLogic = (function () {
     MathLogic.prototype.getPercentage = function (_diff_angle) {
         return Number((_diff_angle / 360 * 100).toFixed(1));
     };
-    Object.defineProperty(MathLogic.prototype, "isRotateClockWise", {
-        get: function () {
-            return this._isRotateClockWise;
-        },
-        set: function (data) {
-            this._isRotateClockWise = data;
-        },
-        enumerable: true,
-        configurable: true
-    });
+    MathLogic.prototype.setisRotateClockWise = function (data) {
+        this._isRotateClockWise = data;
+    };
+    MathLogic.prototype.getisRotateClockWise = function () {
+        return this._isRotateClockWise;
+    };
     return MathLogic;
 }());

@@ -9,10 +9,16 @@
        
     </head>
 
-<body ng-app="chart">
+<body ng-app="chart" >
 <div style="position: absolute; width: 500px; height: 500px; left:0px; top:0px;">
-	<pie-chart colors="DC3912,FF9900,109618,990099,00FF00" radius = "100" myvalue="{{showValue}}" id="myChart1" chartid="chart1" style="position:absolute; left:0px; top:100px;" ng-mouseup="stopMove()"></pie-chart> 
+	
+
+	<pie-chart colors="DCFF00,FF9900,109618,990099,00FF00" radius = "100" myvalue="{{showValue}}" id="myChart1" chartid="chart1" style="position:absolute; left:0px; top:100px;" ng-mouseup="stopMove()" ng-mousemove="mMove($event)"></pie-chart>
+
+	<pie-chart colors="DC3912,00FF00,109618,990099" radius = "150" myvalue="{{showValue}}" id="myChart2" chartid="chart2" style="position:absolute; left:200px; top:100px;" ng-mousemove="mMove($event)" ng-mouseup="stopMove()"></pie-chart>
     
+
+
     <input type="button" name="addSlide" onclick="addSlideFunc()" value="Javascript Add button" /> 
 </div>
 

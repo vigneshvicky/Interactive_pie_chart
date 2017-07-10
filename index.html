@@ -6,31 +6,33 @@
         
         
         <title>INTERACTIVE PIE CHART</title>
-       
+       <style>
+        .stagesize{
+            position:absolute;           
+        }
+       </style>
     </head>
 
-<body ng-app="chart" >
-<div style="position: absolute; width: 500px; height: 500px; left:0px; top:0px;">
+<body>
+<div style="position: absolute; width: 500px; height: 500px; left:0px; top:0px;" ng-app="chart" ng-init="chartObject = [{colors:'DCFF00,FF9900,109618,990099,00FF00',radius:'100',left:'0px',percentage:'20,20,20,10,30'},{colors:'DC3912,00FF00,109618,990099',radius:'120',left:'200px',percentage:'25,25,25,25'}]">
 	
+    <div ng-repeat="data in chartObject">
+        <pie-chart colors="{{data.colors}}" radius = "{{data.radius}}" percentage="{{data.percentage}}" chartid="chart{{$index}}" style="position:absolute; left:{{data.left}}; top:100px;"></pie-chart>
+    </div>
 
-	<pie-chart colors="DCFF00,FF9900,109618,990099,00FF00" radius = "100" myvalue="{{showValue}}" id="myChart1" chartid="chart1" style="position:absolute; left:0px; top:100px;" ng-mouseup="stopMove()" ng-mousemove="mMove($event)"></pie-chart>
-
-	<pie-chart colors="DC3912,00FF00,109618,990099" radius = "150" myvalue="{{showValue}}" id="myChart2" chartid="chart2" style="position:absolute; left:200px; top:100px;" ng-mousemove="mMove($event)" ng-mouseup="stopMove()"></pie-chart>
-    
-
-
-    <input type="button" name="addSlide" onclick="addSlideFunc()" value="Javascript Add button" /> 
+    <input type="button" name="addSlide" onclick="addSlideFunc(0)" value="Add Slice chart 1" /> 
+    <input type="button" name="addSlide" onclick="addSlideFunc(1)" value="Add Slice chart 2" /> 
 </div>
 
 <script type="text/javascript">
-   function addSlideFunc(){
-    //angular.element(document.getElementById('myChart1')).scope().addSlice();
-
-    var scope = angular.element(document.getElementById("myChart1")).scope();
-    scope.$apply(function () {
-        scope.addSlice();
-    });
-   }
+    var colors=['DCFF00','FF9900','109618','990099','00FF00','FF0000','00DDEE','FF00FF'];
+    function addSlideFunc(chartId){
+        var scope = angular.element($("pie-chart").eq(chartId)).scope();
+        scope.$apply(function () {
+            scope.addSlice(colors[scope.colorsData.length]);
+        });
+    }
+   
 </script>
 
     <script type="text/javascript" src="js/lib/angular.min.js"></script>	

@@ -1,5 +1,5 @@
 angular
-.module("chart",[])        
+.module("chart",["ngTouch"])        
 	.directive("pieChart",function(){
         return{
             restrict:"E",
@@ -53,7 +53,7 @@ angular
                             	"<g class=\"slice_line\" ng-repeat=\"myang in default_angles track by $index\" >"+
             						"<path d=\"{{generateSlice(myang,$index)}}\" stroke=\"#ffffff\" stroke-width=\"0\" fill=\"#{{colorsData[$index]}}\"></path>"+
             					"</g>"+
-	                            "<g  class=\"pie_slice\" ng-repeat=\"arr in colorsData track by $index\" custAttr=\"{{attrTestFunc($index)}}\" id=\"{{mychartid}}_stick_{{$index}}\" transform =\"{{getStyle($index)}}\" fill=\"none\" style=\"cursor:pointer;\" ng-mousedown=\"startMoveSlice($event)\">"+
+	                            "<g  class=\"pie_slice\" ng-repeat=\"arr in colorsData track by $index\" custAttr=\"{{attrTestFunc($index)}}\" id=\"{{mychartid}}_stick_{{$index}}\" transform =\"{{getStyle($index)}}\" fill=\"none\" style=\"cursor:pointer;\" ng-touchmove=\"startMoveSlice($event)\" ng-mousedown=\"startMoveSlice($event)\">"+
 	                                "<rect x=\"0\" y=\"-5\" width=\"{{radius}}\" height=\"10\" style=\"fill:blue; fill-opacity:0;\"></rect>"+
 	                                "<line stroke=\"#FFFFFF\" stroke-width=\"2\" x1=\"0\" y1=\"0\" x2=\"{{radius}}\" y2=\"0\" style=\"stroke-opacity:1\"/>"+
 	                            "</g>"+								                         
@@ -102,8 +102,8 @@ angular
 				//console.log("Radius of current pie chart : "+$scope.radius);			
 				mathLogics.basicLogics.setCurrentSlice(evt.currentTarget);
 
-				$document.on('mousemove', mMove_javascript);
-				$document.on('mouseup', stopMove_javascript);
+				$document.on('mousemove touchMove', mMove_javascript);
+				$document.on('mouseup touchend', stopMove_javascript);
 
 				//console.log($( ".pie_slice" ).index( $(evt.currentTarget) ) );
 			}
@@ -116,8 +116,8 @@ angular
 			}
 			function stopMove_javascript(){
 				//console.log("stop move"+$scope.radius);
-				$document.off('mousemove', mMove_javascript);
-				$document.off('mouseup', stopMove_javascript);
+				$document.off('mousemove touchmove', mMove_javascript);
+				$document.off('mouseup touchend', stopMove_javascript);
 			}
 			$scope.mMove = function(evt){
 				var curPos = mathLogics.getCurrentMousePosition(evt,$(mathLogics.basicLogics.currentSlice).parent());

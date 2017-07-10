@@ -14,6 +14,7 @@ angular
 					/*iAttributes.$observe('transform', function (val) {
                     	console.log("observe");
                 	});*/
+
 					$scope.directiveElement = iElement;
 					$scope.radius = Number(iAttributes.radius);
 					$scope.border_thickness = 2;
@@ -23,26 +24,30 @@ angular
 					$scope.mychartid = iAttributes.chartid;
 					$scope.percent = [];
 					$scope.default_angles = [];
+					$scope.currentChartId = "";
 					$scope.colorsData = $scope.colors.split(",");
 					//$scope.totalSlice = $scope.colorsData.length;
 
-
+					$scope.doInitialSetup();
 					if($scope.percentage){
 						var tempArr = $scope.percentage.split(",");
 						var tempVal = 0;
 						for(var i=0;i<tempArr.length;i++){                                                                                                          
-							$scope.percent[i] = tempVal;
+							$scope.default_angles[i] = tempVal;
 							tempVal += Number(tempArr[i]*360/100);
 						}
 						//scope.percent = scope.percentage.split(",");
 					}else{
-						$scope.doInitialSetup();
 						
+						for(var i=0;i<$scope.totalSlice;i++){
+							$scope.default_angles[i] = (360/$scope.totalSlice)*i;
+						}
+
 					}
 					
 					$scope.setXPos;
 				},
-				template:"<div style=\"position:relative;\">"+
+				template:"<div class=\"stagesize\">"+
 							"<svg height=\"{{radius*2+border_thickness}}\" width=\"{{radius*2+border_thickness}}\">"+
                             	"<circle cx=\"{{radius+half_border_thickness}}\" cy=\"{{radius+half_border_thickness}}\" r=\"{{radius}}\" fill=\"#AABBCC\"/>"+
                             	"<g class=\"slice_line\" ng-repeat=\"myang in default_angles track by $index\" >"+
@@ -51,14 +56,13 @@ angular
 	                            "<g  class=\"pie_slice\" ng-repeat=\"arr in colorsData track by $index\" custAttr=\"{{attrTestFunc($index)}}\" id=\"{{mychartid}}_stick_{{$index}}\" transform =\"{{getStyle($index)}}\" fill=\"none\" style=\"cursor:pointer;\" ng-mousedown=\"startMoveSlice($event)\">"+
 	                                "<rect x=\"0\" y=\"-5\" width=\"{{radius}}\" height=\"10\" style=\"fill:blue; fill-opacity:0;\"></rect>"+
 	                                "<line stroke=\"#FFFFFF\" stroke-width=\"2\" x1=\"0\" y1=\"0\" x2=\"{{radius}}\" y2=\"0\" style=\"stroke-opacity:1\"/>"+
-	                            "</g>"+
-								                         
+	                            "</g>"+								                         
 	                            "<circle cx=\"{{radius+half_border_thickness}}\" cy=\"{{radius+half_border_thickness}}\" r=\"10\" fill=\"white\"/>"+
 	                            "<circle cx=\"{{radius+half_border_thickness}}\" cy=\"{{radius+half_border_thickness}}\" r=\"{{radius}}\" stroke-width=\"2\" stroke=\"white\" fill=\"none\"/>"+
                         	"</svg>"+
         				"</div>"
 			}
-		}).controller("Ctrl",["$scope","mathLogics","$document",function($scope,mathLogics,$document){
+		}).controller("Ctrl",["$scope","mathLogics","$document","$rootScope",function($scope,mathLogics,$document,$rootScope){
 //"M"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY+" L"+currentSlicePosition.left+","+currentSlicePosition.top+" A"+mathLogics.basicLogics.radius+","+mathLogics.basicLogics.radius+",0,"+(angleDiff>180?1:0)+",1,"+nextSlicePosition.left+","+nextSlicePosition.top+" L"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY+" A0,0,0,1,0,"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY;
 			//M180,190 L316.3854163570603,127.55788116093981 A150,150,0,0,1,258.37478470739234,317.89602465311384 L180,190 A0,0,0,1,0,180,190
 			//console.log($scope.colors+" : my colors");
@@ -75,9 +79,7 @@ angular
 				$scope.totalSlice = $scope.colorsData.length;//mathLogics.basicLogics.totalSlice;
 				$scope.chartMidX  = $scope.radius+$scope.half_border_thickness;
 				$scope.chartMidY = $scope.radius+$scope.half_border_thickness;
-				for(var i=0;i<$scope.totalSlice;i++){
-					$scope.default_angles[i] = (360/$scope.totalSlice)*i;
-				}
+				
 			}
 			$scope.someFunc = function(val){
                  return "rotate("+(val-0)+",0,0)";
@@ -93,21 +95,29 @@ angular
 				//$scope.theta = "translate(101,101) rotate("+(((360/$scope.totalSlice)*val)-0)+",0,0)"
 				return val+":";
 			}
-			$scope.startMoveSlice = function(evt){	
+			$scope.startMoveSlice = function(evt){
+				$scope.currentChartId = mathLogics.basicLogics.getNumber($($scope.directiveElement).attr("chartid"));
+				//$scope.currentChart = $($scope.directiveElement).attr("chartid");
 				mathLogics.setScope ($scope);
 				//console.log("Radius of current pie chart : "+$scope.radius);			
 				mathLogics.basicLogics.setCurrentSlice(evt.currentTarget);
 
-				//$document.on('mousemove', mMove);
-				//$document.on('mouseup', stopMove);
+				$document.on('mousemove', mMove_javascript);
+				$document.on('mouseup', stopMove_javascript);
 
 				//console.log($( ".pie_slice" ).index( $(evt.currentTarget) ) );
 			}
-
-			stopMove = function(){
-				console.log("stop move"+$scope.radius);
-				//$document.off('mousemove', mMove);
-				//$document.off('mouseup', stopMove);
+			function mMove_javascript(evt){
+			    var scope = angular.element($($scope.directiveElement)).scope();
+			    scope.$apply(function () {
+			        //console.log(evt);
+			        scope.mMove(evt);
+			    });
+			}
+			function stopMove_javascript(){
+				//console.log("stop move"+$scope.radius);
+				$document.off('mousemove', mMove_javascript);
+				$document.off('mouseup', stopMove_javascript);
 			}
 			$scope.mMove = function(evt){
 				var curPos = mathLogics.getCurrentMousePosition(evt,$(mathLogics.basicLogics.currentSlice).parent());
@@ -160,11 +170,14 @@ angular
 			/*drawSlice = function(sliceId, fromPos, toPos, angleDiff){
 				$("#slice"+sliceId).attr("d","M"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY+" L"+fromPos.left+","+fromPos.top+" A"+mathLogics.basicLogics.radius+","+mathLogics.basicLogics.radius+",0,"+(angleDiff>180?1:0)+",1,"+toPos.left+","+toPos.top+" L"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY+" A0,0,0,0,0,"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY);
 			}*/	
-			$scope.addSlice = function(){
+			$scope.addSlice = function(colorCode){
 				//$($scope.directiveElement).find("g").eq(0).css("display","none");
-				$scope.colorsData.push("FF00FF");				
+				$scope.colorsData.push(colorCode);				
 				$($scope.directiveElement).find(".pie_slice").eq(0).attr({'transform': "translate("+($scope.radius+$scope.half_border_thickness)+","+($scope.radius+$scope.half_border_thickness)+") rotate(0,0,0)"});
 				$scope.doInitialSetup();
+				for(var i=0;i<$scope.totalSlice;i++){
+					$scope.default_angles[i] = (360/$scope.totalSlice)*i;
+				}
 				//angular.element(mathLogics.basicLogics.currentSlice).attr({'transform': 'translate(101,101) rotate('+$scope.curAngle+',0,0)'});
 			}
 			$scope.generateSlice = function(curAngle,id){

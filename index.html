@@ -5,12 +5,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         
         
-        <title>INTERACTIVE PIE CHART</title>
-       <style>
-        .stagesize{
-            position:absolute;           
-        }
-       </style>
+        <title>INTERACTIVE PIE CHART</title>       
     </head>
 
 <body>
@@ -32,13 +27,17 @@
             scope.addSlice(colors[scope.colorsData.length]);
         });
     }
-   
+   function callMe(){
+   	alert("called");   	
+   }
+
 </script>
 
     <script type="text/javascript" src="js/lib/angular.min.js"></script>	
     <script type="text/javascript" src="js/lib/jquery-1.9.1.js"></script>    
     <script type="text/javascript" src="js/lib/jquery-ui.js"></script>
-    <!--<script type="text/javascript" src="minified_file/js/minified_file/base.min.js"></script>-->
+    <script type="text/javascript" src="js/lib/ngTouch.js"></script>
+
     <script type="text/javascript" src="js/MathLogic.js"></script>
     <script type="text/javascript" src="js/BasicLogic.js"></script>
     <script type="text/javascript" src="js/script.js"></script>

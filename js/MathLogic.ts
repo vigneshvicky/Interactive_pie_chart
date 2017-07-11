@@ -3,6 +3,14 @@ class MathLogic{
 	private PI = Math.PI;
 	private _isRotateClockWise:boolean;
 	public scopeObject:any;
+	
+	private currentSliceNum:number;
+	public previousSlice:JQuery;
+	public currentSlice:Object;
+	public nextSlice:JQuery;
+	public totalSlice:number;
+	private numberReg = /\d/;
+
 	public basicLogics:BasicLogic = new BasicLogic();
 	constructor(){}
 	public setScope(scopeObj:any){
@@ -36,8 +44,7 @@ class MathLogic{
 
 		return _midAngle;
 	}	
-	public getPositionByAngle(_ang:number, _radius=this.basicLogics.radius,midX:number=this.basicLogics.chartMidX,midY:number=this.basicLogics.chartMidY):Object{
-		
+	public getPositionByAngle(_ang:number, _radius=this.scopeObject.radius,midX:number=this.scopeObject.chartMidX,midY:number=this.scopeObject.chartMidY):Object{		
 		let _theta = this.convertToRadian(_ang);
 		let leftPos = midX+Math.cos(_theta)*_radius;
 		let topPos = midY+Math.sin(_theta)*_radius;
@@ -50,6 +57,19 @@ class MathLogic{
 	public getPositionByAnglesForLabel(_ang1:number,_ang2:number, _textRadius:number):Object{
 		return this.getPositionByAngle(this.getmidAngle(_ang1,_ang2),_textRadius);
 	}
+	public getNumber(_sliceName:string):number{
+		return Number(_sliceName.match(this.numberReg)[0]);
+	}
+	
+	public setCurrentSlice(_currentSlice:Object):void{
+		this.currentSlice = _currentSlice;		
+		this.currentSliceNum = $(this.scopeObject.directiveElement).find(".pie_slice").index( $(this.currentSlice));//this.getNumber(_currentSlice["id"]);
+		let tempId = this.currentSliceNum?~-this.currentSliceNum:this.scopeObject.totalSlice-1;
+		this.previousSlice = $(this.scopeObject.directiveElement).find(".pie_slice").eq(tempId);
+		tempId = (this.currentSliceNum==this.scopeObject.totalSlice-1)?0:-~this.currentSliceNum;
+		this.nextSlice = $(this.scopeObject.directiveElement).find(".pie_slice").eq(tempId);
+	}
+
 	public getCurrentMousePosition(_element:any,_stage:Object):Object{
 		try{
 			_element = event;
@@ -73,6 +93,7 @@ class MathLogic{
 	    }
     	return info;
 	}
+
 	public getPercentageByTwoAngles(_ang1:number,_ang2:number):number{
 		return this.getPercentage(this.getDifference(_ang1,_ang2));
 	}

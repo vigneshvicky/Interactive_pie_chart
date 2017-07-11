@@ -5,12 +5,16 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         
         
-        <title>INTERACTIVE PIE CHART</title>       
+        <title>INTERACTIVE PIE CHART</title>
+       <style>
+        .stagesize{
+            position:absolute;           
+        }
+       </style>
     </head>
 
 <body>
-<div style="position: absolute; width: 500px; height: 500px; left:0px; top:0px;" ng-app="chart" local-storage ng-init="chartObject = getData()">
-	
+<div style="position: absolute; width: 500px; height: 500px; left:0px; top:0px;" ng-app="chart" local-storage ng-init="chartObject = getData()">	
     <div ng-repeat="data in chartObject">
         <pie-chart colors="{{data.colors}}" radius = "{{data.radius}}" percentage="{{data.percentage}}" chartid="chart{{$index}}" style="position:absolute; left:{{data.left}}; top:100px;"></pie-chart>
     </div>
@@ -27,18 +31,16 @@
             scope.addSlice(colors[scope.colorsData.length]);
         });
     }
-   function callMe(){
-   	alert("called");   	
-   }
-
+   
 </script>
 
-    <script type="text/javascript" src="js/lib/angular.min.js"></script>	
+    <script type="text/javascript" src="js/lib/angular.min.js"></script>
     <script type="text/javascript" src="js/lib/jquery-1.9.1.js"></script>    
     <script type="text/javascript" src="js/lib/jquery-ui.js"></script>
+
     <script type="text/javascript" src="js/lib/ngTouch.js"></script>    
     <script type="text/javascript" src="js/local_storage.js"></script>
-	
+    
     <script type="text/javascript" src="js/MathLogic.js"></script>
     <script type="text/javascript" src="js/BasicLogic.js"></script>
     <script type="text/javascript" src="js/script.js"></script>

@@ -82,6 +82,12 @@ var MathLogic = (function () {
                 info.deg = parseFloat((info.rad * 180 / Math.PI).toFixed(1));
             }
         }
+        /*let tr:any = Number(el.attr("transform").split("rotate(")[1].split(",")[0]);
+        tr = tr<-180?()
+        let info:any = {rad: 0, deg: 0}
+        info.deg = Number(tr);
+
+        console.log(tr+" : "+el.attr("id"));*/
         return info;
     };
     MathLogic.prototype.getPercentageByTwoAngles = function (_ang1, _ang2) {

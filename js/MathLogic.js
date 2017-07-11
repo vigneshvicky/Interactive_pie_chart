@@ -2,6 +2,7 @@
 var MathLogic = (function () {
     function MathLogic() {
         this.PI = Math.PI;
+        this.numberReg = /\d/;
         this.basicLogics = new BasicLogic();
     }
     MathLogic.prototype.setScope = function (scopeObj) {
@@ -35,9 +36,9 @@ var MathLogic = (function () {
         return _midAngle;
     };
     MathLogic.prototype.getPositionByAngle = function (_ang, _radius, midX, midY) {
-        if (_radius === void 0) { _radius = this.basicLogics.radius; }
-        if (midX === void 0) { midX = this.basicLogics.chartMidX; }
-        if (midY === void 0) { midY = this.basicLogics.chartMidY; }
+        if (_radius === void 0) { _radius = this.scopeObject.radius; }
+        if (midX === void 0) { midX = this.scopeObject.chartMidX; }
+        if (midY === void 0) { midY = this.scopeObject.chartMidY; }
         var _theta = this.convertToRadian(_ang);
         var leftPos = midX + Math.cos(_theta) * _radius;
         var topPos = midY + Math.sin(_theta) * _radius;
@@ -48,6 +49,17 @@ var MathLogic = (function () {
     };
     MathLogic.prototype.getPositionByAnglesForLabel = function (_ang1, _ang2, _textRadius) {
         return this.getPositionByAngle(this.getmidAngle(_ang1, _ang2), _textRadius);
+    };
+    MathLogic.prototype.getNumber = function (_sliceName) {
+        return Number(_sliceName.match(this.numberReg)[0]);
+    };
+    MathLogic.prototype.setCurrentSlice = function (_currentSlice) {
+        this.currentSlice = _currentSlice;
+        this.currentSliceNum = $(this.scopeObject.directiveElement).find(".pie_slice").index($(this.currentSlice)); //this.getNumber(_currentSlice["id"]);
+        var tempId = this.currentSliceNum ? ~-this.currentSliceNum : this.scopeObject.totalSlice - 1;
+        this.previousSlice = $(this.scopeObject.directiveElement).find(".pie_slice").eq(tempId);
+        tempId = (this.currentSliceNum == this.scopeObject.totalSlice - 1) ? 0 : -~this.currentSliceNum;
+        this.nextSlice = $(this.scopeObject.directiveElement).find(".pie_slice").eq(tempId);
     };
     MathLogic.prototype.getCurrentMousePosition = function (_element, _stage) {
         try {

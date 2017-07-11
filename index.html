@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html>
     <head>
-    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         
         
         <title>INTERACTIVE PIE CHART</title>
        <style>
-        .stagesize{
-            position:absolute;           
+        body{
+            background-color: #000000;
         }
+
        </style>
     </head>
 
 <body>
-<div style="position: absolute; width: 500px; height: 500px; left:0px; top:0px;" ng-app="chart" local-storage ng-init="chartObject = getData()">	
+<div style="position: absolute; width: 500px; height: 500px; left:0px; top:0px;" ng-app="chart" local-storage ng-init="chartObject = getData()">    
     <div ng-repeat="data in chartObject">
         <pie-chart colors="{{data.colors}}" radius = "{{data.radius}}" percentage="{{data.percentage}}" chartid="chart{{$index}}" style="position:absolute; left:{{data.left}}; top:100px;"></pie-chart>
     </div>
@@ -25,6 +26,7 @@
 
 <script type="text/javascript">
     var colors=['DCFF00','FF9900','109618','990099','00FF00','FF0000','00DDEE','FF00FF'];
+    console.log(("translate(121,121) rotate(179.3904934233248,0,0)").split("rotate(")[1].split(",")[0]);
     function addSlideFunc(chartId){
         var scope = angular.element($("pie-chart").eq(chartId)).scope();
         scope.$apply(function () {

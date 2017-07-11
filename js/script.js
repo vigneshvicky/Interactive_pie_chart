@@ -1,5 +1,5 @@
 angular
-.module("chart",["ngTouch"])        
+.module("chart",["ngTouch","localStorage"])        
 	.directive("pieChart",function(){
         return{
             restrict:"E",

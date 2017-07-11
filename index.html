@@ -9,7 +9,7 @@
     </head>
 
 <body>
-<div style="position: absolute; width: 500px; height: 500px; left:0px; top:0px;" ng-app="chart" ng-init="chartObject = [{colors:'DCFF00,FF9900,109618,990099,00FF00',radius:'100',left:'0px',percentage:'20,20,20,10,30'},{colors:'DC3912,00FF00,109618,990099',radius:'120',left:'200px',percentage:'25,25,25,25'}]">
+<div style="position: absolute; width: 500px; height: 500px; left:0px; top:0px;" ng-app="chart" local-storage ng-init="chartObject = getData()">
 	
     <div ng-repeat="data in chartObject">
         <pie-chart colors="{{data.colors}}" radius = "{{data.radius}}" percentage="{{data.percentage}}" chartid="chart{{$index}}" style="position:absolute; left:{{data.left}}; top:100px;"></pie-chart>
@@ -36,8 +36,9 @@
     <script type="text/javascript" src="js/lib/angular.min.js"></script>	
     <script type="text/javascript" src="js/lib/jquery-1.9.1.js"></script>    
     <script type="text/javascript" src="js/lib/jquery-ui.js"></script>
-    <script type="text/javascript" src="js/lib/ngTouch.js"></script>
-
+    <script type="text/javascript" src="js/lib/ngTouch.js"></script>    
+    <script type="text/javascript" src="js/local_storage.js"></script>
+	
     <script type="text/javascript" src="js/MathLogic.js"></script>
     <script type="text/javascript" src="js/BasicLogic.js"></script>
     <script type="text/javascript" src="js/script.js"></script>

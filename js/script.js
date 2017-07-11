@@ -56,7 +56,7 @@ angular
                             	"<g class=\"slice_line\" ng-repeat=\"myang in default_angles track by $index\" >"+
             						"<path d=\"{{generateSlice(myang,$index)}}\" stroke=\"#ffffff\" stroke-width=\"0\" fill=\"#{{colorsData[$index]}}\"></path>"+
             					"</g>"+
-	                            "<g class=\"pie_slice\" ng-repeat=\"arr in colorsData track by $index\" custAttr=\"{{attrTestFunc($index)}}\" id=\"{{mychartid}}_stick_{{$index}}\" transform =\"{{getStyle($index)}}\" fill=\"none\" style=\"cursor:pointer;\" ng-mousedown=\"startMoveSlice($event)\">"+
+	                            "<g class=\"pie_slice\" ng-repeat=\"arr in colorsData track by $index\" custAttr=\"{{attrTestFunc($index)}}\" id=\"{{mychartid}}_stick_{{$index}}\" transform =\"{{getStyle($index)}}\" fill=\"none\" style=\"cursor:pointer;\" ng-touchstart=\"startMoveSlice($event)\" ng-mousedown=\"startMoveSlice($event)\">"+
 	                                "<rect x=\"0\" y=\"-5\" width=\"{{radius}}\" height=\"10\" style=\"fill:blue; fill-opacity:0;\"></rect>"+
 	                                "<line stroke=\"#FFFFFF\" stroke-width=\"2\" x1=\"0\" y1=\"0\" x2=\"{{radius}}\" y2=\"0\" style=\"stroke-opacity:1\"/>"+
 	                            "</g>"+								                         
@@ -106,22 +106,23 @@ angular
 				//console.log("Radius of current pie chart : "+$scope.radius);			
 				mathLogics.setCurrentSlice(evt.currentTarget);
 
-				$document.on('mousemove', mMove_javascript);
-				$document.on('mouseup', stopMove_javascript);
+				$document.on('mousemove touchMove', mMove_javascript);
+				$document.on('mouseup touchend', stopMove_javascript);
 
 				//console.log($( ".pie_slice" ).index( $(evt.currentTarget) ) );
 			}
 			function mMove_javascript(evt){
 			    var scope = angular.element($($scope.directiveElement)).scope();
-			    scope.$apply(function () {
+			    scope.mMove(evt);
+			    /*scope.$apply(function () {
 			        //console.log(evt);
-			        scope.mMove(evt);
-			    });
+			        
+			    });*/
 			}
 			function stopMove_javascript(){
 				//console.log("stop move"+$scope.radius);
-				$document.off('mousemove', mMove_javascript);
-				$document.off('mouseup', stopMove_javascript);
+				$document.off('mousemove touchMove', mMove_javascript);
+				$document.off('mouseup touchend', stopMove_javascript);
 			}
 			$scope.mMove = function(evt){
 				var curPos = mathLogics.getCurrentMousePosition(evt,$(mathLogics.currentSlice).parent());
@@ -141,8 +142,8 @@ angular
 
 				var previousElementPos = mathLogics.getPositionByAngle(mathLogics.getAngleByElement($(mathLogics.previousSlice)).deg);
 				
-				var nextElementPos = mathLogics.getPositionByAngle(mathLogics.getAngleByElement($(mathLogics.nextSlice)).deg);
-				
+				var nextElementPos = mathLogics.getPositionByAngle(mathLogics.getAngleByElement($(mathLogics.nextSlice)).deg);				
+
 				if(previousAngle>350 && curAngle<10){
 					mathLogics.isRotateClockWise = true;
 				}else if(previousAngle<10 && curAngle>350){
@@ -161,7 +162,7 @@ angular
 
 				var pos1 = mathLogics.getPositionByAnglesForLabel(curAngle,myValNext,$scope.defaultTextRadius);			
 				var pos2 = mathLogics.getPositionByAnglesForLabel(myValPrev,curAngle,$scope.defaultTextRadius);
-				
+				//console.log(nextElementPos);
 				$scope.drawSlice(currentIdNum,currentPosition,nextElementPos,curr_next_angle);
 				$scope.drawSlice(previousIdNum,previousElementPos,currentPosition,prev_curr_angle);
 
@@ -172,8 +173,8 @@ angular
 					$scope.checkAnticlockWise_MinAngle(currentIdNum);
 				}
 			}	
-			$scope.pieSliceDatas[currentIdNum] = {x:pos1.left,y:pos1.top,angle:mathLogics.getPercentageByTwoElements($("#sliceBorder"+nextIdNum),$("#sliceBorder"+currentIdNum))};
-			$scope.pieSliceDatas[previousIdNum] = {x:pos2.left,y:pos2.top,angle:mathLogics.getPercentageByTwoElements($("#sliceBorder"+currentIdNum),$("#sliceBorder"+previousIdNum))};
+			$scope.pieSliceDatas[currentIdNum] = {x:pos1.left,y:pos1.top,angle:mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(nextIdNum),$($scope.directiveElement).find(".pie_slice").eq(currentIdNum))};
+			$scope.pieSliceDatas[previousIdNum] = {x:pos2.left,y:pos2.top,angle:mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(currentIdNum),$($scope.directiveElement).find(".pie_slice").eq(previousIdNum))};
 			//scope.$parent.$apply();
 
 			}

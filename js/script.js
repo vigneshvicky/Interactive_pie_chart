@@ -28,7 +28,7 @@ angular
 					$scope.defaultTextRadius = $scope.radius-25;
 					$scope.colorsData = $scope.colors.split(",");
 					$scope.pieSliceDatas = [];
-					$scope.datasObject = [[],[]];
+					//$rootScope.
 					//$scope.totalSlice = $scope.colorsData.length;
 					$scope.previousAngle = 0;
 					$scope.totalPIEAngle = 360;
@@ -49,7 +49,7 @@ angular
 
 					}
 					
-					$scope.setXPos;
+					//$scope.updateText();
 				},
 				template:"<div>"+
 							"<svg height=\"{{radius*2+border_thickness}}\" width=\"{{radius*2+border_thickness}}\">"+
@@ -68,13 +68,14 @@ angular
                         	"</svg>"+
         				"</div>"
 			}
-		}).controller("Ctrl",["$scope","mathLogics","$document","$rootScope",function($scope,mathLogics,$document,$rootScope){
+		}).controller("Ctrl",["$scope","mathLogics","$document","$rootScope","$timeout",function($scope,mathLogics,$document,$rootScope,$timeout){
 //"M"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY+" L"+currentSlicePosition.left+","+currentSlicePosition.top+" A"+mathLogics.basicLogics.radius+","+mathLogics.basicLogics.radius+",0,"+(angleDiff>180?1:0)+",1,"+nextSlicePosition.left+","+nextSlicePosition.top+" L"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY+" A0,0,0,1,0,"+mathLogics.basicLogics.chartMidX+","+mathLogics.basicLogics.chartMidY;
 			//M180,190 L316.3854163570603,127.55788116093981 A150,150,0,0,1,258.37478470739234,317.89602465311384 L180,190 A0,0,0,1,0,180,190
 			//console.log($scope.colors+" : my colors");
 			//$scope.curAngle = 0;
 			//mathLogics.basicLogics.totalSlice = $scope.totalSlice;
 			//mathLogics.basicLogics.chartMidY = $scope.radius;
+			console.log("This is controller");
 			var previousAngle = 0;
 			$scope.getdetails = function(){
 				console.log("caling");
@@ -92,11 +93,6 @@ angular
                  return "rotate("+(val-0)+",0,0)";
             }
 			$scope.getStyle = function(val){
-				var pos = mathLogics.getPositionByAnglesForLabel($scope.default_angles[val],$scope.default_angles[val==($scope.totalSlice-1)?0:(val+1)],$scope.defaultTextRadius,$scope.radius,$scope.radius);
-
-				$scope.pieSliceDatas[val] = {x:pos.left,y:pos.top,angle:Math.round(mathLogics.getPercentageByTwoAngles($scope.default_angles[val==($scope.totalSlice-1)?0:(val+1)],$scope.default_angles[val]))};
-				$($scope.directiveElement).find(".slice_line").eq(val).find("text").attr({x:$scope.pieSliceDatas[val].x,y:$scope.pieSliceDatas[val].y});
-				$($scope.directiveElement).find(".slice_line").eq(val).find("text").text(Math.round($scope.pieSliceDatas[val].angle)+"%");
 				//$($scope.directiveElement).find("slice_line")
 				//$($scope.directiveElement).find(".slice_line").eq(val).find("text").attr({x:pos.left,y:pos.top});
 				//console.log(pos.left+" : "+pos.top+" : "+val+" : "+$scope.defaultTextRadius);
@@ -104,7 +100,15 @@ angular
 				//console.log($scope.default_angles[val]);
 				return "translate("+($scope.radius+$scope.half_border_thickness)+","+($scope.radius+$scope.half_border_thickness)+") rotate("+($scope.default_angles[val]-0)+",0,0)";
 			}
+			$scope.updateText = function(){
+				for(var i=0;i<$scope.totalSlice;i++){
+					var pos = mathLogics.getPositionByAnglesForLabel($scope.default_angles[i],$scope.default_angles[i==($scope.totalSlice-1)?0:(i+1)],$scope.defaultTextRadius,$scope.radius,$scope.radius);
 
+					//$scope.pieSliceDatas[val] = {x:pos.left,y:pos.top,angle:Math.round(mathLogics.getPercentageByTwoAngles($scope.default_angles[val==($scope.totalSlice-1)?0:(val+1)],$scope.default_angles[val]))};
+					$($scope.directiveElement).find(".slice_line").eq(i).find("text").attr({x:pos.left,y:pos.top});
+					$($scope.directiveElement).find(".slice_line").eq(i).find("text").text(Math.round(mathLogics.getPercentageByTwoAngles($scope.default_angles[i==($scope.totalSlice-1)?0:(i+1)],$scope.default_angles[i]))+"%");
+				}
+			}
 			$scope.attrTestFunc = function(val){
 				//console.log(val+" testing func")
 				//$scope.theta = "translate(101,101) rotate("+(((360/$scope.totalSlice)*val)-0)+",0,0)"
@@ -184,14 +188,21 @@ angular
 					}else{
 						$scope.checkAnticlockWise_MinAngle(currentIdNum);
 					}
-				}	
+				}
+				{
+					$($scope.directiveElement).find(".slice_line").eq(currentIdNum).find("text").attr({x:pos1.left,y:pos1.top});
+					$($scope.directiveElement).find(".slice_line").eq(currentIdNum).find("text").text(Math.round(mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(nextIdNum),$($scope.directiveElement).find(".pie_slice").eq(currentIdNum)))+"%");
+
+					$($scope.directiveElement).find(".slice_line").eq(previousIdNum).find("text").attr({x:pos2.left,y:pos2.top});
+					$($scope.directiveElement).find(".slice_line").eq(previousIdNum).find("text").text(Math.round(mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(currentIdNum),$($scope.directiveElement).find(".pie_slice").eq(previousIdNum)))+"%");
+				}
 				
-				$scope.pieSliceDatas[currentIdNum] = {x:pos1.left,y:pos1.top,angle:mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(nextIdNum),$($scope.directiveElement).find(".pie_slice").eq(currentIdNum))};
+				/*$scope.pieSliceDatas[currentIdNum] = {x:pos1.left,y:pos1.top,angle:mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(nextIdNum),$($scope.directiveElement).find(".pie_slice").eq(currentIdNum))};
 				$scope.pieSliceDatas[previousIdNum] = {x:pos2.left,y:pos2.top,angle:mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(currentIdNum),$($scope.directiveElement).find(".pie_slice").eq(previousIdNum))};		
 				for(var i=0; i<$scope.totalSlice;i++){
 					$($scope.directiveElement).find(".slice_line").eq(i).find("text").attr({x:$scope.pieSliceDatas[i].x,y:$scope.pieSliceDatas[i].y});
 					$($scope.directiveElement).find(".slice_line").eq(i).find("text").text(Math.round($scope.pieSliceDatas[i].angle)+"%");
-				}
+				}*/
 			}
 			$scope.checkClockwise_MinAngle = function(currId){
 				var nextIdNum = currId == (~-$scope.totalSlice)?0:currId+1;
@@ -205,6 +216,7 @@ angular
 					curr_next_angle = mathLogics.getDifference(nextAng,currentAng);
 					
 					$scope.drawSlice(currId,currentElementPos,nextElementPos,curr_next_angle);
+					
 					var after_NextIdNum = nextIdNum == (~-$scope.totalSlice)?0:nextIdNum+1;
 					var after_NextAng;				
 					if(mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(after_NextIdNum),$($scope.directiveElement).find(".pie_slice").eq(nextIdNum))<=5){
@@ -220,9 +232,12 @@ angular
 					$scope.drawSlice(nextIdNum,nextElementPos,after_NextPos,next_afterNext_angle_diff);
 					
 					var nextAfterNext_text_pos = mathLogics.getPositionByAnglesForLabel(nextAng,after_NextAng,$scope.defaultTextRadius,$scope.radius,$scope.radius);
+					//console.log(nextAfterNext_text_pos);
+					//$scope.pieSliceDatas[nextIdNum] = {x:nextAfterNext_text_pos.left,y:nextAfterNext_text_pos.top,angle:mathLogics.getPercentage(next_afterNext_angle_diff)};
 					
-					$scope.pieSliceDatas[nextIdNum] = {x:nextAfterNext_text_pos.left,y:nextAfterNext_text_pos.top,angle:mathLogics.getPercentage(next_afterNext_angle_diff)};
-				
+					$($scope.directiveElement).find(".slice_line").eq(nextIdNum).find("text").attr({x:nextAfterNext_text_pos.left,y:nextAfterNext_text_pos.top});
+					$($scope.directiveElement).find(".slice_line").eq(nextIdNum).find("text").text(Math.round(mathLogics.getPercentage(next_afterNext_angle_diff))+"%");
+
 					$scope.checkClockwise_MinAngle(nextIdNum);
 				}
 			}
@@ -258,8 +273,10 @@ angular
 				$scope.drawSlice(prevId,before_PrevPos,prevElementPos,prev_beforePrev_angle_diff);
 				
 				var prevBeforePrev_text_pos = mathLogics.getPositionByAnglesForLabel(prev_beforePrev_angle,prevAng,$scope.defaultTextRadius,$scope.radius,$scope.radius);
-				$scope.pieSliceDatas[prevId] = {x:prevBeforePrev_text_pos.left,y:prevBeforePrev_text_pos.top,angle:mathLogics.getPercentage(prev_beforePrev_angle_diff)};				
-				
+				//$scope.pieSliceDatas[prevId] = {x:prevBeforePrev_text_pos.left,y:prevBeforePrev_text_pos.top,angle:mathLogics.getPercentage(prev_beforePrev_angle_diff)};								
+				$($scope.directiveElement).find(".slice_line").eq(prevId).find("text").attr({x:prevBeforePrev_text_pos.left,y:prevBeforePrev_text_pos.top});
+				$($scope.directiveElement).find(".slice_line").eq(prevId).find("text").text(Math.round(mathLogics.getPercentage(prev_beforePrev_angle_diff))+"%");
+
 				$scope.checkAnticlockWise_MinAngle(prevIdNum);
 				
 			}
@@ -277,6 +294,8 @@ angular
 				for(var i=0;i<$scope.totalSlice;i++){
 					$scope.default_angles[i] = (360/$scope.totalSlice)*i;
 				}
+				 //10 seconds delay
+	        $timeout($scope.updateText,10);
 				//angular.element(mathLogics.basicLogics.currentSlice).attr({'transform': 'translate(101,101) rotate('+$scope.curAngle+',0,0)'});
 			}
 			$scope.generateSlice = function(curAngle,id){

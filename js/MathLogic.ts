@@ -54,8 +54,8 @@ class MathLogic{
 	public getPositionByElement(_ele:JQuery):Object{
 		return this.getPositionByAngle(this.getAngleByElement(_ele).deg);
 	}
-	public getPositionByAnglesForLabel(_ang1:number,_ang2:number, _textRadius:number):Object{
-		return this.getPositionByAngle(this.getmidAngle(_ang1,_ang2),_textRadius);
+	public getPositionByAnglesForLabel(_ang1:number,_ang2:number, _textRadius:number,midX:number,midY:number):Object{
+		return this.getPositionByAngle(this.getmidAngle(_ang1,_ang2),_textRadius,midX,midY);
 	}
 	public getNumber(_sliceName:string):number{
 		return Number(_sliceName.match(this.numberReg)[0]);

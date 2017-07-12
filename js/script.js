@@ -28,6 +28,7 @@ angular
 					$scope.defaultTextRadius = $scope.radius-25;
 					$scope.colorsData = $scope.colors.split(",");
 					$scope.pieSliceDatas = [];
+					$scope.datasObject = [[],[]];
 					//$scope.totalSlice = $scope.colorsData.length;
 					$scope.previousAngle = 0;
 					$scope.totalPIEAngle = 360;
@@ -54,11 +55,13 @@ angular
 							"<svg height=\"{{radius*2+border_thickness}}\" width=\"{{radius*2+border_thickness}}\">"+
                             	"<circle cx=\"{{radius+half_border_thickness}}\" cy=\"{{radius+half_border_thickness}}\" r=\"{{radius}}\" fill=\"#AABBCC\"/>"+
                             	"<g class=\"slice_line\" ng-repeat=\"myang in default_angles track by $index\" >"+
-            						"<path d=\"{{generateSlice(myang,$index)}}\" stroke=\"#ffffff\" stroke-width=\"0\" fill=\"#{{colorsData[$index]}}\"></path>"+
+            						"<path d=\"{{generateSlice(myang,$index)}}\" stroke=\"#ffffff\" stroke-width=\"0\" fill=\"#{{colorsData[$index]}}\"></path>"+            						 
+            						"<!--<text text-anchor=\"middle\" dy=\"6\" x=\"{{pieSliceDatas[$index].x}}\" y=\"{{pieSliceDatas[$index].y}}\" font-family=\"Arial\" font-size=\"16\" fill=\"#ffffff\">{{pieSliceDatas[$index].angle}}%</text>-->"+
+            						"<text text-anchor=\"middle\" dy=\"6\" font-family=\"Arial\" font-size=\"16\" fill=\"#ffffff\"></text>"+
             					"</g>"+
 	                            "<g class=\"pie_slice\" ng-repeat=\"arr in colorsData track by $index\" custAttr=\"{{attrTestFunc($index)}}\" id=\"{{mychartid}}_stick_{{$index}}\" transform =\"{{getStyle($index)}}\" fill=\"none\" style=\"cursor:pointer;\" ng-touchstart=\"startMoveSlice($event)\" ng-mousedown=\"startMoveSlice($event)\">"+
 	                                "<rect x=\"0\" y=\"-5\" width=\"{{radius}}\" height=\"10\" style=\"fill:blue; fill-opacity:0;\"></rect>"+
-	                                "<line stroke=\"#FFFFFF\" stroke-width=\"2\" x1=\"0\" y1=\"0\" x2=\"{{radius}}\" y2=\"0\" style=\"stroke-opacity:1\"/>"+
+	                                "<line stroke=\"#FFFFFF\" stroke-width=\"2\" x1=\"0\" y1=\"0\" x2=\"{{radius}}\" y2=\"0\" style=\"stroke-opacity:1\"/>"+	                                
 	                            "</g>"+								                         
 	                            "<circle cx=\"{{radius+half_border_thickness}}\" cy=\"{{radius+half_border_thickness}}\" r=\"10\" fill=\"white\"/>"+
 	                            "<circle cx=\"{{radius+half_border_thickness}}\" cy=\"{{radius+half_border_thickness}}\" r=\"{{radius}}\" stroke-width=\"2\" stroke=\"white\" fill=\"none\"/>"+
@@ -79,7 +82,7 @@ angular
 			$scope.doInitialSetup = function(){
 				//mathLogics.basicLogics.radius = $scope.radius;
 				//mathLogics.basicLogics.totalSlice = $scope.colorsData.length;
-				mathLogics.setScope ($scope);
+				//mathLogics.setScope ($scope);
 				$scope.totalSlice = $scope.colorsData.length;//mathLogics.basicLogics.totalSlice;
 				$scope.chartMidX  = $scope.radius+$scope.half_border_thickness;
 				$scope.chartMidY = $scope.radius+$scope.half_border_thickness;
@@ -89,6 +92,14 @@ angular
                  return "rotate("+(val-0)+",0,0)";
             }
 			$scope.getStyle = function(val){
+				var pos = mathLogics.getPositionByAnglesForLabel($scope.default_angles[val],$scope.default_angles[val==($scope.totalSlice-1)?0:(val+1)],$scope.defaultTextRadius,$scope.radius,$scope.radius);
+
+				$scope.pieSliceDatas[val] = {x:pos.left,y:pos.top,angle:Math.round(mathLogics.getPercentageByTwoAngles($scope.default_angles[val==($scope.totalSlice-1)?0:(val+1)],$scope.default_angles[val]))};
+				$($scope.directiveElement).find(".slice_line").eq(val).find("text").attr({x:$scope.pieSliceDatas[val].x,y:$scope.pieSliceDatas[val].y});
+				$($scope.directiveElement).find(".slice_line").eq(val).find("text").text(Math.round($scope.pieSliceDatas[val].angle)+"%");
+				//$($scope.directiveElement).find("slice_line")
+				//$($scope.directiveElement).find(".slice_line").eq(val).find("text").attr({x:pos.left,y:pos.top});
+				//console.log(pos.left+" : "+pos.top+" : "+val+" : "+$scope.defaultTextRadius);
 				//$scope.default_angles[val] = val*$scope.eachAngle;
 				//console.log($scope.default_angles[val]);
 				return "translate("+($scope.radius+$scope.half_border_thickness)+","+($scope.radius+$scope.half_border_thickness)+") rotate("+($scope.default_angles[val]-0)+",0,0)";
@@ -101,6 +112,7 @@ angular
 			}
 			$scope.startMoveSlice = function(evt){
 				$scope.currentChartId = mathLogics.getNumber($($scope.directiveElement).attr("chartid"));
+				console.log($scope.currentChartId);
 				//$scope.currentChart = $($scope.directiveElement).attr("chartid");
 				mathLogics.setScope ($scope);
 				//console.log("Radius of current pie chart : "+$scope.radius);			
@@ -160,23 +172,26 @@ angular
 				var prev_curr_angle = mathLogics.getDifference(curAngle,myValPrev);
 				var curr_next_angle = mathLogics.getDifference(myValNext,curAngle);
 
-				var pos1 = mathLogics.getPositionByAnglesForLabel(curAngle,myValNext,$scope.defaultTextRadius);			
-				var pos2 = mathLogics.getPositionByAnglesForLabel(myValPrev,curAngle,$scope.defaultTextRadius);
+				var pos1 = mathLogics.getPositionByAnglesForLabel(curAngle,myValNext,$scope.defaultTextRadius,$scope.radius,$scope.radius);			
+				var pos2 = mathLogics.getPositionByAnglesForLabel(myValPrev,curAngle,$scope.defaultTextRadius,$scope.radius,$scope.radius);
 				//console.log(nextElementPos);
 				$scope.drawSlice(currentIdNum,currentPosition,nextElementPos,curr_next_angle);
 				$scope.drawSlice(previousIdNum,previousElementPos,currentPosition,prev_curr_angle);
 
 				if(mathLogics.getPercentage(curr_next_angle)<=5||mathLogics.getPercentage(prev_curr_angle)<=5){
-				if(mathLogics.isRotateClockWise){
-					$scope.checkClockwise_MinAngle(currentIdNum);
-				}else{
-					$scope.checkAnticlockWise_MinAngle(currentIdNum);
+					if(mathLogics.isRotateClockWise){
+						$scope.checkClockwise_MinAngle(currentIdNum);
+					}else{
+						$scope.checkAnticlockWise_MinAngle(currentIdNum);
+					}
+				}	
+				
+				$scope.pieSliceDatas[currentIdNum] = {x:pos1.left,y:pos1.top,angle:mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(nextIdNum),$($scope.directiveElement).find(".pie_slice").eq(currentIdNum))};
+				$scope.pieSliceDatas[previousIdNum] = {x:pos2.left,y:pos2.top,angle:mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(currentIdNum),$($scope.directiveElement).find(".pie_slice").eq(previousIdNum))};		
+				for(var i=0; i<$scope.totalSlice;i++){
+					$($scope.directiveElement).find(".slice_line").eq(i).find("text").attr({x:$scope.pieSliceDatas[i].x,y:$scope.pieSliceDatas[i].y});
+					$($scope.directiveElement).find(".slice_line").eq(i).find("text").text(Math.round($scope.pieSliceDatas[i].angle)+"%");
 				}
-			}	
-			$scope.pieSliceDatas[currentIdNum] = {x:pos1.left,y:pos1.top,angle:mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(nextIdNum),$($scope.directiveElement).find(".pie_slice").eq(currentIdNum))};
-			$scope.pieSliceDatas[previousIdNum] = {x:pos2.left,y:pos2.top,angle:mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(currentIdNum),$($scope.directiveElement).find(".pie_slice").eq(previousIdNum))};
-			//scope.$parent.$apply();
-
 			}
 			$scope.checkClockwise_MinAngle = function(currId){
 				var nextIdNum = currId == (~-$scope.totalSlice)?0:currId+1;
@@ -204,7 +219,7 @@ angular
 					
 					$scope.drawSlice(nextIdNum,nextElementPos,after_NextPos,next_afterNext_angle_diff);
 					
-					var nextAfterNext_text_pos = mathLogics.getPositionByAnglesForLabel(nextAng,after_NextAng,$scope.defaultTextRadius);
+					var nextAfterNext_text_pos = mathLogics.getPositionByAnglesForLabel(nextAng,after_NextAng,$scope.defaultTextRadius,$scope.radius,$scope.radius);
 					
 					$scope.pieSliceDatas[nextIdNum] = {x:nextAfterNext_text_pos.left,y:nextAfterNext_text_pos.top,angle:mathLogics.getPercentage(next_afterNext_angle_diff)};
 				
@@ -242,7 +257,7 @@ angular
 				prevId = prevIdNum?prevIdNum-1:~-$scope.totalSlice;
 				$scope.drawSlice(prevId,before_PrevPos,prevElementPos,prev_beforePrev_angle_diff);
 				
-				var prevBeforePrev_text_pos = mathLogics.getPositionByAnglesForLabel(prev_beforePrev_angle,prevAng,$scope.defaultTextRadius);
+				var prevBeforePrev_text_pos = mathLogics.getPositionByAnglesForLabel(prev_beforePrev_angle,prevAng,$scope.defaultTextRadius,$scope.radius,$scope.radius);
 				$scope.pieSliceDatas[prevId] = {x:prevBeforePrev_text_pos.left,y:prevBeforePrev_text_pos.top,angle:mathLogics.getPercentage(prev_beforePrev_angle_diff)};				
 				
 				$scope.checkAnticlockWise_MinAngle(prevIdNum);

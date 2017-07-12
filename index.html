@@ -14,7 +14,7 @@
        </style>
     </head>
 
-<body>
+<body onload="init()">
 <div style="position: absolute; width: 500px; height: 500px; left:0px; top:0px;" ng-app="chart" local-storage ng-init="chartObject = getData()">    
     <div ng-repeat="data in chartObject">
         <pie-chart colors="{{data.colors}}" radius = "{{data.radius}}" percentage="{{data.percentage}}" chartid="chart{{$index}}" style="position:absolute; left:{{data.left}}; top:100px;"></pie-chart>
@@ -33,6 +33,16 @@
             scope.addSlice(colors[scope.colorsData.length]);
         });
     }
+    function init(){
+    	var scope = angular.element($("pie-chart").eq(0)).scope();
+        scope.$apply(function () {
+            scope.updateText();
+        });
+        scope = angular.element($("pie-chart").eq(1)).scope();
+        scope.$apply(function () {
+            scope.updateText();
+        });
+    };
    
 </script>
 

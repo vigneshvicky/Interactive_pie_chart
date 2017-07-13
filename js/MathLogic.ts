@@ -25,10 +25,10 @@ class MathLogic{
 	public getDistance(_x:number,_y:number):number{
 		return Math.sqrt(_x*_x+_y*_y);
 	}
-	private convertToDegree(_radian:number):number{
+	public convertToDegree(_radian:number):number{
 		return _radian*180/this.PI;
 	}
-	private convertToRadian(_degree:number):number{
+	public convertToRadian(_degree:number):number{
 		return _degree*this.PI/180;
 	}
 	public getmidAngle(_angle1:number,_angle2:number):number{
@@ -82,7 +82,7 @@ class MathLogic{
 	}
 	public getAngleByElement(_ele:JQuery):any{
 		let el:JQuery = _ele;
-        let tr:any = el.css("-webkit-transform") || el.css("-moz-transform") || el.css("-ms-transform") || el.css("-o-transform") || '';
+        let tr:any = el.css("-webkit-transform") || el.css("-moz-transform") || el.css("-ms-transform") || el.css("-o-transform") || '';        
         let info:any = {rad: 0, deg: 0}
 	    if (tr = tr.match('matrix\\((.*)\\)')) {
 	        tr = tr[1].split(',');
@@ -91,12 +91,6 @@ class MathLogic{
 	            info.deg = parseFloat((info.rad * 180 / Math.PI).toFixed(1));
 	        }
 	    }
-		/*let tr:any = Number(el.attr("transform").split("rotate(")[1].split(",")[0]);
-		tr = tr<-180?()
-		let info:any = {rad: 0, deg: 0}
-		info.deg = Number(tr);
-
-		console.log(tr+" : "+el.attr("id"));*/
     	return info;
 	}
 

@@ -26,7 +26,6 @@
 
 <script type="text/javascript">
     var colors=['DCFF00','FF9900','109618','990099','00FF00','FF0000','00DDEE','FF00FF'];
-    console.log(("translate(121,121) rotate(179.3904934233248,0,0)").split("rotate(")[1].split(",")[0]);
     function addSlideFunc(chartId){
         var scope = angular.element($("pie-chart").eq(chartId)).scope();
         scope.$apply(function () {
@@ -36,10 +35,12 @@
     function init(){
     	var scope = angular.element($("pie-chart").eq(0)).scope();
         scope.$apply(function () {
+        	scope.getStyle();
             scope.updateText();
         });
         scope = angular.element($("pie-chart").eq(1)).scope();
         scope.$apply(function () {
+        	scope.getStyle();
             scope.updateText();
         });
     };

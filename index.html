@@ -10,55 +10,79 @@
 	        body{
 	            background-color: #000000;
 	        }
-	        #eventCollecter{
-	        	width:150px;
-	        	height:250px;
-	        	left: 500px;
-	        	overflow-x: hidden;
-	        	overflow-y: auto;
-	        	position: relative;;
-	        	background-color:white; 	        
-	        }
-
-	        .leaf{
-	        	width: 100%;
-	        	position: relative;
-	        	background-color: grey;
-	        }
-	        .bold{
-	        	font-weight: bold;;
-	        }
-	        .middle{
-	        	text-align: center;
-	        }
-	        .setBorder{
-	        	border:1px solid black;
-	        }
+	        *{
+			    -webkit-user-select: none; /* Chrome, Opera, Safari */
+			    -moz-user-select: none; /* Firefox 2+ */
+			    -ms-user-select: none; /* IE 10+ */
+			    user-select: none; /* Standard syntax */
+			}
+			/*.pie_chart0{
+				left:0px;
+				top:100px;
+			}
+			.pie_chart1{
+				left:240px;	
+				top:100px;			
+			}*/
+	        
         </style>
     </head>
 
-	<body>
+	<body onload="init()">
 		<div style="position: absolute; width: 500px; height: 500px; left:0px; top:0px;" ng-app="chart" local-storage ng-init="chartObject = getData()">    
 		    <div ng-repeat="data in chartObject">
-		        <pie-chart colors="{{data.colors}}" radius = "{{data.radius}}" percentage="{{data.percentage}}" chartid="chart{{$index}}" style="position:absolute; left:{{data.left}}; top:100px;"></pie-chart>
+		        <pie-chart id="pie_chart{{$index}}" colors="{{data.colors}}" angles={{data.angles}} radius = "120" percentage="{{data.percentage}}" chartid="chart{{$index}}"></pie-chart>
 		    </div>
 
 		    <input type="button" name="addSlide" onclick="addSlideFunc(0)" value="Add Slice chart 1" /> 
 		    <input type="button" name="addSlide" onclick="addSlideFunc(1)" value="Add Slice chart 2" /> 
-		    <div id="eventCollecter">
-		    	<div class="leaf bold middle">Event Listener</div>
-		    </div>
+
+		    <input type="button" name="resetAllSlice" onclick="doResetAll()" value="Reset All" />
+		    <input type="button" name="removeSlice" onclick="doRemoveSlice()" value="Remove Slice" />
 		</div>
 
 		<script type="text/javascript">
-		    var colors=['DCFF00','FF9900','109618','990099','00FF00','FF0000','00DDEE','FF00FF'];
+		    var localStorageId = "pieChartAngle"; //localstorage name
+			var activityTitle = "Wheel of life activity"; //Activity Title
+			var legendData = ["Work","Community and Civic","Fun, Exercise & Recreation","Personal Development","Family & Friends"]; //legend data
+			var pieSliceColors=[[{colors:'DC3912',percentage:"20",angles:0},{colors:'FF9900',percentage:"20",angles:72},{colors:'109618',percentage:"20",angles:144},{colors:'990099',percentage:"20",angles:216},{colors:'3366CC',percentage:"20",angles:288}],[{colors:'DC3912',percentage:"20",angles:0},{colors:'FF9900',percentage:"20",angles:72},{colors:'109618',percentage:"20",angles:144},{colors:'990099',percentage:"20",angles:216},{colors:'3366CC',percentage:"20",angles:288}]]; //chart slice colors
+
+			var addingSlice_colors=[['FF0000','0000FF'],['FF0000','0000FF']];
 		    function addSlideFunc(chartId){
 		        var scope = angular.element($("pie-chart").eq(chartId)).scope();
 		        scope.$apply(function () {
-		            scope.addSlice(colors[scope.colorsData.length]);
+		        	if(!addingSlice_colors[chartId].length){
+		            	scope.addSlice(addingSlice_colors[chartId].splice(addingSlice_colors[chartId].length-1, 1));
+		            }else{
+		            	alert("max reached");
+		            }
 		        });
 		    }
-		   
+
+		    function doResetAll(){
+		    	var scope = angular.element($("pie-chart").eq(0)).scope();
+		        scope.$apply(function () {
+		            scope.resetAll(['FFDC00','FF9900','109618','990099','0000FF','FFFF00']);
+		        });
+
+		        var scope = angular.element($("pie-chart").eq(1)).scope();
+		        scope.$apply(function () {
+		            scope.resetAll(['DC3912','00FF00','109618','990099']);
+		        });
+		    }
+		    function doRemoveSlice(){
+		   		var scope = angular.element($("pie-chart").eq(0)).scope();
+		        scope.$apply(function () {
+		            scope.removeSlice(0);
+		        });
+		    }
+		    function init(){
+		    	$("#pie_chart0").css({left:"0px",top:"100px",position:"absolute"});
+		    	$("#pie_chart1").css({left:"240px",top:"100px",position:"absolute"});
+		    }
+		    /*function sendData_to_Javascript(){
+		    	alert("call me function called");
+		    }*/
 		</script>
 
 	    <script type="text/javascript" src="js/lib/angular.min.js"></script>

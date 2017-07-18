@@ -11,7 +11,7 @@ app.directive("localStorage",[function () {
             $scope.myAddingColors=[];
             $scope.inputTextField = [[],[]];
             $scope.getData = function() {
-            	//localStorage.removeItem(localStorageId);
+            	localStorage.removeItem(localStorageId);
             	var mydata = [[],[]];
             	var storageData = angular.fromJson(localStorage.getItem(localStorageId));
             	//$rootScope.default_angles=[45,117,189,261,333];
@@ -43,7 +43,7 @@ app.directive("localStorage",[function () {
 						mycolors[j] = _currentPieData[i][j].colors;
 						mypercentage[j]= _currentPieData[i][j].percentage;
 						myangles[j] = _currentPieData[i][j].angles;
-						$scope.inputTextField[i][j] = "a : "+i+" : "+j;
+						$scope.inputTextField[i][j] = {content:_currentPieData[i][j].content,colors:mycolors[j]};
 					}
 					mydata[i] = {angles:myangles.join(","),colors:mycolors.join(",").replace(/#/g,""),percentage:mypercentage.join(",").replace(/%/g,"")};
 				}

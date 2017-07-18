@@ -7,193 +7,197 @@
         
         <title>INTERACTIVE PIE CHART</title>
         <style>
-	        body{
-	            background-color: #DCDCDC;
-	        }
-	        
-			.text_container{
-				width: 250px;
-				height:auto;
-				border:1px solid red;
-			}
-			.text_leaf{
-				display: flex;
-				width: 100%;
-			}
-			.edit_icon{
-				width: 20px;
-				height: 20px;
-				background-color:blue; 
-			}
-			.remove_icon{
-				width: 20px;
-				height: 20px;
-				background-color:green; 
-			}
-			#txt_cotainer_id0{
-				position: relative;
-				left:20px;
-				height: 100%;
-			}
-			#txt_cotainer_id1{
-				position: relative;
-				left:20px;
-				height: 100%;
-			}
-			 input[type="text"]{  
-			  -webkit-user-select: text;  /* Chrome all / Safari all */
-			  -moz-user-select: text;     /* Firefox all */
-			  -ms-user-select: text;      /* IE 10+ */
-			  user-select: text;          /* Likely future */ 
-			  width:100px;
-			  height:22px;
-			  font-size:14px;
-			}
-			.circle {width: 10px; height: 10px; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; display:inline-block; }
-			#legend{
-				
-				width:250px;
-				position:relative;
-			}
-			.legendDataClass{
-				max-width:270px;
-				overflow:hidden;
-				display:inline-block;
-				font-size:14px;
-				position:relative;
-				top:3px;
-			}
-			/*.pie_chart0{
-				left:0px;
-				top:100px;
-			}
-			.pie_chart1{
-				left:240px;	
-				top:100px;			
-			}*/
-	        
+            body{
+                background-color: #DCDCDC;
+            }
+            
+            .text_container{
+                width: 250px;
+                height:auto;
+                border:1px solid red;
+            }
+            .text_leaf{
+                display: flex;
+                width: 100%;
+            }
+            .edit_icon{
+                width: 20px;
+                height: 20px;
+                background-color:blue; 
+            }
+            .remove_icon{
+                width: 20px;
+                height: 20px;
+                background-color:green; 
+            }
+            #txt_cotainer_id0{
+                position: relative;
+                left:20px;
+                height: 100%;
+            }
+            #txt_cotainer_id1{
+                position: relative;
+                left:20px;
+                height: 100%;
+            }
+             input[type="text"]{  
+              -webkit-user-select: text;  /* Chrome all / Safari all */
+              -moz-user-select: text;     /* Firefox all */
+              -ms-user-select: text;      /* IE 10+ */
+              user-select: text;          /* Likely future */ 
+              width:100px;
+              height:22px;
+              font-size:14px;
+            }
+            .circle {width: 10px; height: 10px; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; display:inline-block; }
+            #legend{
+                
+                width:250px;
+                position:relative;
+            }
+            .legendDataClass{
+                max-width:270px;
+                overflow:hidden;
+                display:inline-block;
+                font-size:14px;
+                position:relative;
+                top:3px;
+            }
+            /*.pie_chart0{
+                left:0px;
+                top:100px;
+            }
+            .pie_chart1{
+                left:240px; 
+                top:100px;          
+            }*/
+            
         </style>
     </head>
 
-	<body onload="init()">
-		<div id="chartContainer" style="position: absolute;top:100px; display: flex;" ng-app="chart" local-storage ng-init="chartObject = getData()">    
-		    <div ng-repeat="data in chartObject" style="display: flex; position: relative; height: 242px;margin-left:60px; ">
-		        <pie-chart id="pie_chart{{$index}}" colors="{{data.colors}}" angles={{data.angles}} radius = "120" percentage="{{data.percentage}}" chartid="chart{{$index}}" style="width:242px; height:242px;"></pie-chart>
-		        <div class="text_container" id=txt_cotainer_id{{$index}}>
+    <body onload="init()">
+        <div id="chartContainer" style="position: absolute;top:100px; display: flex;" ng-app="chart" local-storage ng-init="chartObject = getData()">    
+            <div ng-repeat="data in chartObject" style="display: flex; position: relative; height: 242px;margin-left:60px; ">
+                <pie-chart id="pie_chart{{$index}}" colors="{{data.colors}}" angles={{data.angles}} radius = "120" percentage="{{data.percentage}}" chartid="chart{{$index}}" style="width:242px; height:242px;"></pie-chart>
+                <div class="text_container" id=txt_cotainer_id{{$index}}>
 
-		        <div id="legend">
-            		<div class="data" ng-repeat="legend in inputTextField[$index] track by $index" edit-icon remove-me="doBlur(event)" start-edit="doEdit(event)" color-code = "#FFFF00" mycolor={{$index}} legend-data = "{{legend}}"></div>            
-        		</div>
+                <div id="legend_{{$index}}">
+                    <div class="data" ng-repeat="legend in inputTextField[$index] track by $index" edit-icon remove-me="doBlur(event)" start-edit="doEdit(event)" color-code = "{{legend.colors}}" legend-data = "{{legend.content}}"></div>            
+                </div>
 
-		        	<!--<div class="text_leaf" ng-repeat="data in inputTextField[$index]">
-		        		<div class="edit_icon"></div>
-		        		<input type="text" name="text" value={{data}} placeholder="Text Me" />
-		        		<div class="remove_icon"></div>
-		        	</div>-->
-		        </div>
-		    </div>
+                    <!--<div class="text_leaf" ng-repeat="data in inputTextField[$index]">
+                        <div class="edit_icon"></div>
+                        <input type="text" name="text" value={{data}} placeholder="Text Me" />
+                        <div class="remove_icon"></div>
+                    </div>-->
+                </div>
+            </div>
 
 
-		    
-		</div>
-		<input type="button" name="addSlide" onclick="addSlideFunc(0)" value="Add Slice chart 1" /> 
-	    <input type="button" name="addSlide" onclick="addSlideFunc(1)" value="Add Slice chart 2" /> 
+            
+        </div>
+        <input type="button" name="addSlide" onclick="addSlideFunc(0)" value="Add Slice chart 1" /> 
+        <input type="button" name="addSlide" onclick="addSlideFunc(1)" value="Add Slice chart 2" /> 
 
-	    
-	    <input type="button" name="removeSlice" onclick="doRemoveSlice(0)" value="Remove Slice 1" />
-	    <input type="button" name="removeSlice" onclick="doRemoveSlice(1)" value="Remove Slice 2" />
+        
+        <input type="button" name="removeSlice" onclick="doRemoveSlice(0)" value="Remove Slice 1" />
+        <input type="button" name="removeSlice" onclick="doRemoveSlice(1)" value="Remove Slice 2" />
 
-	    <input type="button" name="resetAllSlice" onclick="doResetAll()" value="Reset All" />
-		<script type="text/javascript">
-		    var localStorageId = "pieChartAngle"; //localstorage name
-			var activityTitle = "Wheel of life activity"; //Activity Title
-			var legendData = ["Work","Community and Civic","Fun, Exercise & Recreation","Personal Development","Family & Friends"]; //legend data
-			var pieSliceColors=[[{colors:'DC3912',percentage:"20",angles:0},{colors:'FF9900',percentage:"20",angles:72},{colors:'109618',percentage:"20",angles:144},{colors:'990099',percentage:"20",angles:216},{colors:'3366CC',percentage:"20",angles:288}],[{colors:'DC3912',percentage:"20",angles:0},{colors:'FF9900',percentage:"20",angles:72},{colors:'109618',percentage:"20",angles:144},{colors:'990099',percentage:"20",angles:216},{colors:'3366CC',percentage:"20",angles:288}]]; //chart slice colors
+        <input type="button" name="resetAllSlice" onclick="doResetAll()" value="Reset All" />
+        <script type="text/javascript">
+            window.localStorage.clear();
+            var localStorageId = "pieChartAngle"; //localstorage name
+            var activityTitle = "Subject"; //Activity Title
+            var legendData = ["English","Tamil","Maths","Science","Social"]; //legend data
+            var pieSliceColors=[[{colors:'DC3912',percentage:"20",angles:0,content:"English"},{colors:'FF9900',percentage:"20",angles:72,content:"Tamil"},{colors:'109618',percentage:"20",angles:144,content:"Maths"},{colors:'990099',percentage:"20",angles:216,content:"Science"},{colors:'3366CC',percentage:"20",angles:288,content:"Social"}],[{colors:'DC3912',percentage:"20",angles:0,content:"English"},{colors:'FF9900',percentage:"20",angles:72,content:"Tamil"},{colors:'109618',percentage:"20",angles:144,content:"Maths"},{colors:'990099',percentage:"20",angles:216,content:"Science"},{colors:'3366CC',percentage:"20",angles:288,content:"Social"}]]; //chart slice colors
 
-			var addingSlice_colors=[['FF0000','0000FF'],['FF0000','0000FF']];
-			var adding_storageColor = [[],[]];
+            var addingSlice_colors=[['FF0000','0000FF'],['FF0000','0000FF']];
+            var adding_storageColor = [[],[]];
 
-		    function addSlideFunc(chartId){
-		        var scope = angular.element($("pie-chart").eq(chartId)).scope();
-		        scope.$apply(function () {
-		        	if(adding_storageColor[chartId].length){
-		            	scope.addSlice(adding_storageColor[chartId].splice(adding_storageColor[chartId].length-1, 1)[0]);
-		            	localStorage.setItem(localStorageId+"_color_"+chartId, adding_storageColor[chartId]);		            	
-		            }else{
-		            	alert("max reached");
-		            }
-		        });
-		    }
+            function addSlideFunc(chartId){
+                var scope = angular.element($("pie-chart").eq(chartId)).scope();
+                scope.$apply(function () {
+                    if(adding_storageColor[chartId].length){
+                        scope.addSlice(adding_storageColor[chartId].splice(adding_storageColor[chartId].length-1, 1)[0]);
+                        localStorage.setItem(localStorageId+"_color_"+chartId, adding_storageColor[chartId]);                       
+                    }else{
+                        alert("max reached");
+                    }
+                });
+            }
 
-		    function doResetAll(){
-		    	var scope = angular.element($("pie-chart").eq(0)).scope();
-		        scope.$apply(function () {
-		            scope.resetAll(['DC3912','FF9900','109618','990099','3366CC']);
-		        });
+            function doResetAll(){
+                var scope = angular.element($("pie-chart").eq(0)).scope();
+                scope.$apply(function () {
+                    scope.resetAll(['DC3912','FF9900','109618','990099','3366CC']);
+                    //scope.inputTextField[0] = ;
+                });
 
-		        var scope = angular.element($("pie-chart").eq(1)).scope();
-		        scope.$apply(function () {
-		            scope.resetAll(['DC3912','FF9900','109618','990099','3366CC']);
-		        });
-		        adding_storageColor=[['FF0000','0000FF'],['FF0000','0000FF']];
-		        localStorage.setItem(localStorageId+"_color_0", adding_storageColor[0]);
-		        localStorage.setItem(localStorageId+"_color_1", adding_storageColor[1]);
-		    }
-		    function doRemoveSlice(chartId){
-		   		var scope = angular.element($("pie-chart").eq(chartId)).scope();
-		        scope.$apply(function () {
-		            var removedColor = scope.removeSlice(0);
-		            adding_storageColor[chartId].push(removedColor);
-		            localStorage.setItem(localStorageId+"_color_"+chartId, adding_storageColor[chartId]);
-		            adding_storageColor[chartId] = localStorage.getItem(localStorageId+"_color_"+chartId).split(",");
-		        });
-		    }
-		    function init(){
-		    	//window.localStorage.clear();
-		    	if (typeof(Storage) !== "undefined") {
-		    		var storageData = localStorage.getItem(localStorageId+"_color_0");
-				    // Store
-				    
-				    if(storageData!=null){
-				    	console.log(storageData+" : storageData if condition");
-				    	adding_storageColor[0] = localStorage.getItem(localStorageId+"_color_0").split(",");
-					}else{
-						adding_storageColor[0] = addingSlice_colors[0];
-						localStorage.setItem(localStorageId+"_color_0", addingSlice_colors[0]);
-					}
+                var scope = angular.element($("pie-chart").eq(1)).scope();
+                scope.$apply(function () {
+                    scope.resetAll(['DC3912','FF9900','109618','990099','3366CC']);
+                });
+                adding_storageColor=[['FF0000','0000FF'],['FF0000','0000FF']];
 
-					storageData = localStorage.getItem(localStorageId+"_color_1");
-				    // Store
-				    if(storageData){
-				    	adding_storageColor[1] = localStorage.getItem(localStorageId+"_color_1").split(",");
-					}else{
-						adding_storageColor[1] = addingSlice_colors[1];
-						localStorage.setItem(localStorageId+"_color_1", addingSlice_colors[1]);
-					}
+                localStorage.setItem(localStorageId+"_color_0", adding_storageColor[0]);
+                localStorage.setItem(localStorageId+"_color_1", adding_storageColor[1]);
+            }
+            function doRemoveSlice(chartId){
+                var scope = angular.element($("pie-chart").eq(chartId)).scope();
+                scope.$apply(function () {
+                    var removedColor = scope.removeSlice(0);
+                    adding_storageColor[chartId].push(removedColor);
+                    localStorage.setItem(localStorageId+"_color_"+chartId, adding_storageColor[chartId]);
+                    adding_storageColor[chartId] = localStorage.getItem(localStorageId+"_color_"+chartId).split(",");
+                    scope.inputTextField[chartId].splice(0,1);
+                });
+            }
+            function init(){
+                //window.localStorage.clear();
+                if (typeof(Storage) !== "undefined") {
+                    var storageData = localStorage.getItem(localStorageId+"_color_0");
+                    // Store
+                    
+                    if(storageData!=null){
+                        console.log(storageData+" : storageData if condition");
+                        adding_storageColor[0] = localStorage.getItem(localStorageId+"_color_0").split(",");
+                    }else{
+                        adding_storageColor[0] = addingSlice_colors[0];
+                        localStorage.setItem(localStorageId+"_color_0", addingSlice_colors[0]);
+                    }
 
-				} else {
-				    document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Storage...";
-				}
+                    storageData = localStorage.getItem(localStorageId+"_color_1");
+                    // Store
+                    if(storageData){
+                        adding_storageColor[1] = localStorage.getItem(localStorageId+"_color_1").split(",");
+                    }else{
+                        adding_storageColor[1] = addingSlice_colors[1];
+                        localStorage.setItem(localStorageId+"_color_1", addingSlice_colors[1]);
+                    }
 
-		    	$("#pie_chart0").css({position:"relative"});
-		    	$("#pie_chart1").css({position:"relative"});
-		    }
-		    /*function sendData_to_Javascript(){
-		    	alert("call me function called");
-		    }*/
-		</script>
+                } else {
+                    document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Storage...";
+                }
 
-	    <script type="text/javascript" src="js/lib/angular.min.js"></script>
-	    <script type="text/javascript" src="js/lib/jquery-1.9.1.js"></script>    
-	    <script type="text/javascript" src="js/lib/jquery-ui.js"></script>
-	    <script type="text/javascript" src="js/custom_jquery.js"></script>
+                $("#pie_chart0").css({position:"relative"});
+                $("#pie_chart1").css({position:"relative"});
+            }
+            /*function sendData_to_Javascript(){
+                alert("call me function called");
+            }*/
+        </script>
 
-	    <script type="text/javascript" src="js/lib/ngTouch.js"></script>    
-	    <script type="text/javascript" src="js/local_storage.js"></script>
-	    
-	    <script type="text/javascript" src="js/MathLogic.js"></script>
-	    <script type="text/javascript" src="js/BasicLogic.js"></script>
-	    <script type="text/javascript" src="js/script.js"></script>
-	    
-	</body>
+        <script type="text/javascript" src="js/lib/angular.min.js"></script>
+        <script type="text/javascript" src="js/lib/jquery-1.9.1.js"></script>    
+        <script type="text/javascript" src="js/lib/jquery-ui.js"></script>
+        <script type="text/javascript" src="js/custom_jquery.js"></script>
+
+        <script type="text/javascript" src="js/lib/ngTouch.js"></script>    
+        <script type="text/javascript" src="js/local_storage.js"></script>
+        
+        <script type="text/javascript" src="js/MathLogic.js"></script>
+        <script type="text/javascript" src="js/BasicLogic.js"></script>
+        <script type="text/javascript" src="js/script.js"></script>
+        
+    </body>
 </html>

@@ -1,4 +1,4 @@
-angular
+var app = angular
 .module("chart",["localStorage"])        
     .directive("pieChart",function(){
         return{
@@ -80,10 +80,7 @@ angular
             $scope.updateText = function(){
 
                 for(var i=0; i<$scope.totalSlice; i++){
-                    console.log(typeof $scope.default_angles[i]);
-                    console.log($scope.default_angles[i]+" : "+$scope.default_angles[i==($scope.totalSlice-1)?0:(i+1)]+" : "+i);
                     var pos = mathLogics.getPositionByAnglesForLabel($scope.default_angles[i],$scope.default_angles[i==($scope.totalSlice-1)?0:(i+1)],$scope.defaultTextRadius,$scope.radius,$scope.radius);
-                    console.log(pos);
                     $($scope.directiveElement).find(".slice_line").eq(i).find("text").attr({x:pos.left,y:pos.top});
                     $($scope.directiveElement).find(".slice_line").eq(i).find("text").text(Math.round(mathLogics.getPercentageByTwoAngles($scope.default_angles[i==($scope.totalSlice-1)?0:(i+1)],$scope.default_angles[i]))+"%");
                 }
@@ -99,23 +96,22 @@ angular
                 mathLogics.setScope ($scope);
                 mathLogics.setCurrentSlice(evt.currentTarget);
 
-                $("body").on('mousemove touchmove', mMove_javascript);
-                $("body").on('mouseup touchend', stopMove_javascript);
+                $("#pie_chart"+$($scope.directiveElement).attr("id").match(/\d/)).on('mousemove touchmove', mMove_javascript);
+                $("#pie_chart"+$($scope.directiveElement).attr("id").match(/\d/)).on('mouseup touchend', stopMove_javascript);
             }
             function mMove_javascript(evt){
                 var scope = angular.element($($scope.directiveElement)).scope();
                 scope.mMove(evt);
             }
             function stopMove_javascript(){
-                $("body").off('mousemove touchmove', mMove_javascript);
-                $("body").off('mouseup touchend', stopMove_javascript);
+                $("#pie_chart"+$($scope.directiveElement).attr("id").match(/\d/)).off('mousemove touchmove', mMove_javascript);
+                $("#pie_chart"+$($scope.directiveElement).attr("id").match(/\d/)).off('mouseup touchend', stopMove_javascript);
                 $scope.saveToLocalStorage();
             }
             $scope.saveToLocalStorage = function(){
                 var allDatas = [];
                 for(var i=0;i<$scope.totalSlice;i++){
                     allDatas[i] = {angles:mathLogics.getAngleByElement($($scope.directiveElement).find(".pie_slice").eq(i)).deg,percentage:mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(i==($scope.totalSlice-1)?0:(i+1)),$($scope.directiveElement).find(".pie_slice").eq(i)),colors:$($scope.directiveElement).find(".slice_line").eq(i).find("path").attr("fill")};
-                    console.log(allDatas[i].angles);
                 }
                 $scope.saveState(Number($scope.directiveElement.attr("chartid").match(/\d+/)[0]),allDatas);
             }
@@ -165,7 +161,6 @@ angular
                 
                 $($scope.directiveElement).find(".slice_line").eq(currentIdNum).find("text").attr({x:pos1.left,y:pos1.top});
                 $($scope.directiveElement).find(".slice_line").eq(currentIdNum).find("text").text(Math.round(mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(nextIdNum),$($scope.directiveElement).find(".pie_slice").eq(currentIdNum)))+"%");
-
                 $($scope.directiveElement).find(".slice_line").eq(previousIdNum).find("text").attr({x:pos2.left,y:pos2.top});
                 $($scope.directiveElement).find(".slice_line").eq(previousIdNum).find("text").text(Math.round(mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(currentIdNum),$($scope.directiveElement).find(".pie_slice").eq(previousIdNum)))+"%");
                 //console.log(mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(i),$($scope.directiveElement).find(".pie_slice").eq(previousIdNum)));
@@ -248,13 +243,14 @@ angular
                 $($scope.directiveElement).find(".slice_line").eq(sliceId).find("path").attr("d","M"+$scope.chartMidX+","+$scope.chartMidY+" L"+fromPos.left+","+fromPos.top+" A"+$scope.radius+","+$scope.radius+",0,"+(angleDiff>180?1:0)+",1,"+toPos.left+","+toPos.top+" L"+$scope.chartMidX+","+$scope.chartMidY+" A0,0,0,0,0,"+$scope.chartMidX+","+$scope.chartMidY);
             }   
             $scope.addSlice = function(colorCode){
-                $scope.colorsData.push(colorCode);  
-                console.log(colorCode);
+               
+                $scope.colorsData.splice(0,0,colorCode); 
                 $scope.resetAll($scope.colorsData);
             }
             $scope.removeSlice = function(index){
-                $scope.colorsData.splice(index, 1);
-                $scope.resetAll($scope.colorsData);               
+                var splicecolor = $scope.colorsData.splice(index, 1);
+                $scope.resetAll($scope.colorsData);
+                return splicecolor;
                 //$scope.saveState(Number($scope.directiveElement.attr("chartid").match(/\d+/)[0]),allDatas);
             }
             $scope.generateSlice = function(curAngle,id){
@@ -275,4 +271,31 @@ angular
                 $timeout(function(){$scope.updateText();$scope.getStyle();$scope.saveToLocalStorage();},10);
                 //$scope.saveState(Number($scope.directiveElement.attr("chartid").match(/\d+/)[0]),allDatas);
             }
-        }]).value("mathLogics",new MathLogic());
+            
+}]).value("mathLogics",new MathLogic());
+
+app.directive("editIcon",[function(){    
+    return{
+        controller:"icons",
+        scope:{
+            'startEdit':'&','colorCode':'@','legendData':'@','removeMe':'&'
+            },
+        template:'<img src="images/edit.png" alt="Edit" ng-mousedown="isEdit=!isEdit; doEdit($event);" style="cursor:pointer;" />&nbsp;&nbsp;<div style="width:100%; display:inline; position:relative; top:-7px;"><div class="circle" style="background-color:{{colorCode}};"></div> <div class="legendDataClass" ng-bind="legendData" ng-hide="isEdit">{{legendData}}</div><input ng-show="isEdit" ng-blur="isEdit=false; doBlur($event)" type="text" maxlength="30" style="position:relative; top:-2px; width:160px;" ng-model="legendData"></div><div style="width:20px; height:20px; background-color:red; position:relative; display:inline-flex; left:15px;"></div>'
+    }
+}]).controller("icons",["$scope","$timeout",function($scope,$timeout){
+        $scope.doEdit = function(event){
+            setTimeout(function(){
+                //console.log($(event.target).parent().find(".legendDataClass").text());
+                //console.log($(event.target).parent().find("input").css("display","none"));
+                $(event.target).parent().find("input").focus().selectRange(0,$(event.target).parent().find(".legendDataClass").text().length);
+            },50);
+        }
+        $scope.doBlur = function(event){
+            var allSpans = $("#legend").find(".legendDataClass");
+            var len = allSpans.length;
+            for(var i=0;i<len;i++){
+                userService.data.legendNames[i] = allSpans.eq(i).text();
+            }       
+            $rootScope.$broadcast("savestate");
+        }
+}]);

@@ -88,7 +88,7 @@ var app = angular
             $scope.setTransform = function(id,angle){
                 var ang_rad = mathLogics.convertToRadian(angle);
                 var cos = Math.cos(ang_rad);
-                var sin = Math.sin(ang_rad);                
+                var sin = Math.sin(ang_rad);
                 $($scope.directiveElement).find(".pie_slice").eq(id).css("transform","matrix("+cos+","+sin+","+(-sin)+","+cos+","+($scope.radius+$scope.half_border_thickness)+","+($scope.radius+$scope.half_border_thickness)+")");
             }
 
@@ -111,7 +111,7 @@ var app = angular
             $scope.saveToLocalStorage = function(){
                 var allDatas = [];
                 for(var i=0;i<$scope.totalSlice;i++){
-                    allDatas[i] = {angles:mathLogics.getAngleByElement($($scope.directiveElement).find(".pie_slice").eq(i)).deg,percentage:mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(i==($scope.totalSlice-1)?0:(i+1)),$($scope.directiveElement).find(".pie_slice").eq(i)),colors:$($scope.directiveElement).find(".slice_line").eq(i).find("path").attr("fill")};
+                    allDatas[i] = {content:"abcd"+i,angles:mathLogics.getAngleByElement($($scope.directiveElement).find(".pie_slice").eq(i)).deg,percentage:mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(i==($scope.totalSlice-1)?0:(i+1)),$($scope.directiveElement).find(".pie_slice").eq(i)),colors:$($scope.directiveElement).find(".slice_line").eq(i).find("path").attr("fill")};
                 }
                 $scope.saveState(Number($scope.directiveElement.attr("chartid").match(/\d+/)[0]),allDatas);
             }
@@ -267,7 +267,7 @@ var app = angular
                 $scope.doInitialSetup();
                 for(var i=0;i<$scope.totalSlice;i++){
                     $scope.default_angles[i] = (360/$scope.totalSlice)*i;
-                }                
+                }
                 $timeout(function(){$scope.updateText();$scope.getStyle();$scope.saveToLocalStorage();},10);
                 //$scope.saveState(Number($scope.directiveElement.attr("chartid").match(/\d+/)[0]),allDatas);
             }
@@ -280,22 +280,25 @@ app.directive("editIcon",[function(){
         scope:{
             'startEdit':'&','colorCode':'@','legendData':'@','removeMe':'&'
             },
-        template:'<img src="images/edit.png" alt="Edit" ng-mousedown="isEdit=!isEdit; doEdit($event);" style="cursor:pointer;" />&nbsp;&nbsp;<div style="width:100%; display:inline; position:relative; top:-7px;"><div class="circle" style="background-color:{{colorCode}};"></div> <div class="legendDataClass" ng-bind="legendData" ng-hide="isEdit">{{legendData}}</div><input ng-show="isEdit" ng-blur="isEdit=false; doBlur($event)" type="text" maxlength="30" style="position:relative; top:-2px; width:160px;" ng-model="legendData"></div><div style="width:20px; height:20px; background-color:red; position:relative; display:inline-flex; left:15px;"></div>'
+        template:'<img src="images/edit.png" alt="Edit" ng-mousedown="isEdit=!isEdit; doEdit($event);" style="cursor:pointer;" />&nbsp;&nbsp;<div style="width:100%; display:inline; position:relative; top:-7px;"><div class="circle" style="background-color:{{colorCode}};"></div> <div class="legendDataClass" ng-bind="legendData" ng-hide="isEdit">{{legendData}}</div><input ng-show="isEdit" ng-blur="isEdit=false; doBlur($event)" type="text" maxlength="30" style="position:relative; top:-2px; width:160px;" ng-model="legendData"></div><div ng-click="removeMe($event)" style="width:20px; height:20px; background-color:red; position:relative; display:inline-flex; left:15px;"></div>'
     }
 }]).controller("icons",["$scope","$timeout",function($scope,$timeout){
         $scope.doEdit = function(event){
             setTimeout(function(){
-                //console.log($(event.target).parent().find(".legendDataClass").text());
-                //console.log($(event.target).parent().find("input").css("display","none"));
                 $(event.target).parent().find("input").focus().selectRange(0,$(event.target).parent().find(".legendDataClass").text().length);
             },50);
         }
         $scope.doBlur = function(event){
-            var allSpans = $("#legend").find(".legendDataClass");
+            /*var allSpans = $("#legend").find(".legendDataClass");
             var len = allSpans.length;
             for(var i=0;i<len;i++){
                 userService.data.legendNames[i] = allSpans.eq(i).text();
             }       
-            $rootScope.$broadcast("savestate");
+            $rootScope.$broadcast("savestate");*/
+        }
+        $scope.removeMe = function(event){
+        	console.log($($(event.target).parent().index())[0]);
+        	//console.log($($(event.target).parent().parent()).index($(event.target).parent()));
+        	//$(event.target).parent().remove();
         }
 }]);

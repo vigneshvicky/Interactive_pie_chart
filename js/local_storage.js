@@ -3,10 +3,13 @@ app.value("localStorageId",localStorageId);
 app.value("sliceColors",pieSliceColors);
 app.value("allPie_data",[]);
 app.value("currentPieData",[[],[]]);
+app.value("addingColors",addingSlice_colors)
 
 app.directive("localStorage",[function () {
     return {
-        controller: ["$scope","localStorageId","allPie_data","sliceColors","currentPieData","$rootScope", function ($scope,localStorageId,allPie_data,sliceColors,currentPieData,$rootScope) {
+        controller: ["$scope","localStorageId","allPie_data","sliceColors","currentPieData","addingColors","$rootScope", function ($scope,localStorageId,allPie_data,sliceColors,currentPieData,addingColors,$rootScope) {
+            $scope.myAddingColors=[];
+            $scope.inputTextField = [[],[]];
             $scope.getData = function() {
             	//localStorage.removeItem(localStorageId);
             	var mydata = [[],[]];
@@ -19,7 +22,6 @@ app.directive("localStorage",[function () {
 					mydata[0] = testObj[0];
 					mydata[1] = testObj[1];
 			    }else{
-			    	//console.log(sliceColors);
 			    	var testObj = $scope.splitupData(sliceColors);
 					mydata[0] = testObj[0];
 					mydata[1] = testObj[1];
@@ -41,45 +43,17 @@ app.directive("localStorage",[function () {
 						mycolors[j] = _currentPieData[i][j].colors;
 						mypercentage[j]= _currentPieData[i][j].percentage;
 						myangles[j] = _currentPieData[i][j].angles;
+						$scope.inputTextField[i][j] = "a : "+i+" : "+j;
 					}
 					mydata[i] = {angles:myangles.join(","),colors:mycolors.join(",").replace(/#/g,""),percentage:mypercentage.join(",").replace(/%/g,"")};
 				}
-				//console.log(mydata);
 				return mydata;
             }
             $scope.saveState = function (id,data) {
-            	console.log("datas : "+id);
-            	console.log(currentPieData);
-            	console.log(data);
             	currentPieData[id] = data;
 		        localStorage.setItem(localStorageId,angular.toJson(currentPieData));
 		        //console.log(angular.fromJson(localStorage.getItem(localStorageId)));
 		    };
-            /*var service = {
-				data: {			
-		            angles:defaultDatas.angles,
-					legendNames:defaultDatas.legendNames
-		        },
-
-		        SaveState: function () {
-			
-            localStorage.setItem(localStorageId,angular.toJson({angles:service.data.angles,legendNames:service.data.legendNames}));
-        },
-
-		        RestoreState: function () {
-					var storageData = angular.fromJson(localStorage.getItem(localStorageId));
-					
-					service.data.legendNames = storageData.legendNames||service.data.legendNames;
-		            service.data.angles = storageData.angles||service.data.angles;
-					
-		        },
-				ClearState: function () {
-					//localStorage.setItem(localStorageId,angular.toJson({angles:defaultDatas.angles,legendNames:defaultDatas.legendNames}));
-		        }
-		    }
-		    $rootScope.$on("savestate", service.SaveState);
-		    $rootScope.$on("restorestate", service.RestoreState);
-			$rootScope.$on("clearState", service.ClearState);*/
         }]
     }
 }]);

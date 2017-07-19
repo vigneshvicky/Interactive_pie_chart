@@ -11,16 +11,18 @@ app.directive("localStorage",[function () {
             $scope.myAddingColors=[];
             $scope.inputTextField = [[],[]];
             $scope.getData = function() {
-            	localStorage.removeItem(localStorageId);
+            	//localStorage.removeItem(localStorageId);
             	var mydata = [[],[]];
             	var storageData = angular.fromJson(localStorage.getItem(localStorageId));
             	//$rootScope.default_angles=[45,117,189,261,333];
 				if(storageData){
 					
-					currentPieData = storageData;
-					var testObj = $scope.splitupData(currentPieData);
+					//currentPieData = storageData;
+					var testObj = $scope.splitupData(storageData);
 					mydata[0] = testObj[0];
 					mydata[1] = testObj[1];
+					$scope.saveState(0,storageData[0]);
+			    	$scope.saveState(1,storageData[1]);
 			    }else{
 			    	var testObj = $scope.splitupData(sliceColors);
 					mydata[0] = testObj[0];
@@ -39,20 +41,25 @@ app.directive("localStorage",[function () {
 					var mycolors = [];
 					var mypercentage = [];
 					var myangles = [];
+					var content = [];
 					for(var j =0;j<_currentPieData[i].length;j++){
 						mycolors[j] = _currentPieData[i][j].colors;
 						mypercentage[j]= _currentPieData[i][j].percentage;
 						myangles[j] = _currentPieData[i][j].angles;
-						$scope.inputTextField[i][j] = {content:_currentPieData[i][j].content,colors:mycolors[j]};
+						content[j] = _currentPieData[i][j].content;
+						//$scope.inputTextField[i][j] = {content:_currentPieData[i][j].content,colors:mycolors[j].replace(/#/g,"")};
 					}
-					mydata[i] = {angles:myangles.join(","),colors:mycolors.join(",").replace(/#/g,""),percentage:mypercentage.join(",").replace(/%/g,"")};
+					mydata[i] = {angles:myangles.join(","),colors:mycolors.join(",").replace(/#/g,""),percentage:mypercentage.join(",").replace(/%/g,""),content:content,legend_colors:mycolors};
 				}
+				//currentPieData = mydata;
 				return mydata;
             }
             $scope.saveState = function (id,data) {
             	currentPieData[id] = data;
 		        localStorage.setItem(localStorageId,angular.toJson(currentPieData));
+		        //console.log("from storage");
 		        //console.log(angular.fromJson(localStorage.getItem(localStorageId)));
+		        window.storeData_in_globally(currentPieData);
 		    };
         }]
     }

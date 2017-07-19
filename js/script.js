@@ -54,7 +54,7 @@ var app = angular
                             "<circle cx=\"{{radius+half_border_thickness}}\" cy=\"{{radius+half_border_thickness}}\" r=\"{{radius}}\" stroke-width=\"2\" stroke=\"white\" fill=\"none\"/>"+
                         "</svg>"
             }
-        }).controller("Ctrl",["$scope","mathLogics","$document","$rootScope","$timeout",function($scope,mathLogics,$document,$rootScope,$timeout){
+        }).controller("Ctrl",["$scope","mathLogics","$document","$rootScope","$timeout","$compile",function($scope,mathLogics,$document,$rootScope,$timeout,$compile){
             angular.element(document).ready(function() {
                 var scope = angular.element($scope.directiveElement).scope();
                 scope.$apply(function() {
@@ -89,7 +89,9 @@ var app = angular
                 var ang_rad = mathLogics.convertToRadian(angle);
                 var cos = Math.cos(ang_rad);
                 var sin = Math.sin(ang_rad);
-                $($scope.directiveElement).find(".pie_slice").eq(id).css("transform","matrix("+cos+","+sin+","+(-sin)+","+cos+","+($scope.radius+$scope.half_border_thickness)+","+($scope.radius+$scope.half_border_thickness)+")");
+                var rotate_value = "matrix("+cos+","+sin+","+(-sin)+","+cos+","+($scope.radius+$scope.half_border_thickness)+","+($scope.radius+$scope.half_border_thickness)+")";
+                $($scope.directiveElement).find(".pie_slice").eq(id).css("transform",rotate_value);
+                $($scope.directiveElement).find(".pie_slice").eq(id).attr("matrix",rotate_value);
             }
 
             $scope.startMoveSlice = function(evt){
@@ -110,10 +112,13 @@ var app = angular
             }
             $scope.saveToLocalStorage = function(){
                 var allDatas = [];
+                var chartId = Number($scope.directiveElement.attr("chartid").match(/\d+/)[0]);
                 for(var i=0;i<$scope.totalSlice;i++){
-                    allDatas[i] = {content:"abcd"+i,angles:mathLogics.getAngleByElement($($scope.directiveElement).find(".pie_slice").eq(i)).deg,percentage:mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(i==($scope.totalSlice-1)?0:(i+1)),$($scope.directiveElement).find(".pie_slice").eq(i)),colors:$($scope.directiveElement).find(".slice_line").eq(i).find("path").attr("fill")};
+                    allDatas[i] = {content:$("#legend_"+chartId).find(".legendDataClass").eq(i).text(),angles:mathLogics.getAngleByElement($($scope.directiveElement).find(".pie_slice").eq(i)).deg,percentage:mathLogics.getPercentageByTwoElements($($scope.directiveElement).find(".pie_slice").eq(i==($scope.totalSlice-1)?0:(i+1)),$($scope.directiveElement).find(".pie_slice").eq(i)),colors:$($scope.directiveElement).find(".slice_line").eq(i).find("path").attr("fill").replace(/#/,"")};
                 }
-                $scope.saveState(Number($scope.directiveElement.attr("chartid").match(/\d+/)[0]),allDatas);
+                allDatas[0].additional_color = allCurrentData[chartId][0].additional_color;
+                allDatas[0].additional_legend = allCurrentData[chartId][0].additional_legend;
+                $scope.saveState(chartId,allDatas);
             }
             $scope.mMove = function(evt){
                 var curPos = mathLogics.getCurrentMousePosition(evt,$(mathLogics.currentSlice).parent());
@@ -242,9 +247,9 @@ var app = angular
             $scope.drawSlice = function(sliceId, fromPos, toPos, angleDiff){
                 $($scope.directiveElement).find(".slice_line").eq(sliceId).find("path").attr("d","M"+$scope.chartMidX+","+$scope.chartMidY+" L"+fromPos.left+","+fromPos.top+" A"+$scope.radius+","+$scope.radius+",0,"+(angleDiff>180?1:0)+",1,"+toPos.left+","+toPos.top+" L"+$scope.chartMidX+","+$scope.chartMidY+" A0,0,0,0,0,"+$scope.chartMidX+","+$scope.chartMidY);
             }   
-            $scope.addSlice = function(colorCode){
-               
-                $scope.colorsData.splice(0,0,colorCode); 
+            $scope.addSlice = function(colorCode,legend_content){            	
+               $("#legend_"+$($scope.directiveElement).attr("id").match(/\d/)).append($compile('<div edit-icon="" remove-me="doBlur(event)" start-edit="doEdit(event)" color-code="#'+colorCode+'" legend-data="'+legend_content+'"></div>')( $scope ));
+                $scope.colorsData.push(colorCode); 
                 $scope.resetAll($scope.colorsData);
             }
             $scope.removeSlice = function(index){
@@ -297,8 +302,7 @@ app.directive("editIcon",[function(){
             $rootScope.$broadcast("savestate");*/
         }
         $scope.removeMe = function(event){
-        	console.log($($(event.target).parent().index())[0]);
-        	//console.log($($(event.target).parent().parent()).index($(event.target).parent()));
-        	//$(event.target).parent().remove();
+        	doRemoveSlice(Number($($(event.target).parent().parent().parent()).attr("id").match(/\d/)[0]),$($(event.target).parent()).index(),rgb2hex($(event.target).parent().find(".circle").css("background-color")),$(event.target).parent().find(".legendDataClass").text());
+			$(event.target).parent().remove();
         }
 }]);

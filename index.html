@@ -14,7 +14,6 @@
             .text_container{
                 width: 250px;
                 height:auto;
-                border:1px solid red;
             }
             .text_leaf{
                 display: flex;
@@ -82,7 +81,7 @@
                 <div class="text_container" id=txt_cotainer_id{{$index}}>
 
                 <div id="legend_{{$index}}">
-                    <div class="data" ng-repeat="legend in data.content track by $index" edit-icon remove-me="doBlur(event)" start-edit="doEdit(event)" color-code = "#{{data.legend_colors[$index]}}" legend-data = "{{data.content[$index]}}"></div>
+                    <div class="data" ng-repeat="legend in data.content track by $index" edit-icon remove-me="doBlur(event)" start-edit="doEdit(event)" color-code = "#{{data.legend_colors[$index]}}" legend-data = "{{data.content[$index]}}" style="height:35px;"></div>
                 </div>
 
                     <!--<div class="text_leaf" ng-repeat="data in inputTextField[$index]">
@@ -99,17 +98,13 @@
         <input type="button" name="addSlide" onclick="addSlideFunc(0)" value="Add Slice chart 1" /> 
         <input type="button" name="addSlide" onclick="addSlideFunc(1)" value="Add Slice chart 2" /> 
 
-        
-        <input type="button" name="removeSlice" onclick="doRemoveSlice(0,0)" value="Remove Slice 1" />
-        <input type="button" name="removeSlice" onclick="doRemoveSlice(1,0)" value="Remove Slice 2" />
-
         <input type="button" name="resetAllSlice" onclick="doResetAll()" value="Reset All" />
         <script type="text/javascript">
             //window.localStorage.clear();
             var localStorageId = "pieChartAngle"; //localstorage name
             var activityTitle = "Subject"; //Activity Title
             var legendData = ["English","Tamil","Maths","Science","Social"]; //legend data
-            var pieSliceColors=[[{colors:'DC3912',percentage:"20",angles:0,content:"English",additional_color:['FF0000','0000FF'],additional_legend:['Physics','Chemistry']},{colors:'FF9900',percentage:"20",angles:72,content:"Tamil"},{colors:'109618',percentage:"20",angles:144,content:"Maths"},{colors:'990099',percentage:"20",angles:216,content:"Science"},{colors:'3366CC',percentage:"20",angles:288,content:"Social"}],[{colors:'DC3912',percentage:"20",angles:0,content:"English1",additional_color:['FF0000','0000FF'],additional_legend:['Physics','Chemistry']},{colors:'FF9900',percentage:"20",angles:72,content:"Tamil"},{colors:'109618',percentage:"20",angles:144,content:"Maths"},{colors:'990099',percentage:"20",angles:216,content:"Science"},{colors:'3366CC',percentage:"20",angles:288,content:"Social"}]]; //chart slice colors
+            var pieSliceColors=[[{colors:'DC3912',percentage:"20",angles:0,content:"English",additional_color:['4caf50','ff9900'],additional_legend:['Physics','Chemistry']},{colors:'FF9900',percentage:"20",angles:72,content:"Tamil"},{colors:'109618',percentage:"20",angles:144,content:"Maths"},{colors:'990099',percentage:"20",angles:216,content:"Science"},{colors:'3366CC',percentage:"20",angles:288,content:"Social"}],[{colors:'DC3912',percentage:"20",angles:0,content:"English1",additional_color:['4caf50','ff9900'],additional_legend:['Physics','Chemistry']},{colors:'FF9900',percentage:"20",angles:72,content:"Tamil"},{colors:'109618',percentage:"20",angles:144,content:"Maths"},{colors:'990099',percentage:"20",angles:216,content:"Science"},{colors:'3366CC',percentage:"20",angles:288,content:"Social"}]]; //chart slice colors
             var allCurrentData;
             var addingSlice_colors=[[],['FF0000','0000FF']];
             var adding_storageColor = [[],[]];
@@ -119,15 +114,13 @@
             }
             function addSlideFunc(chartId){
                 var scope = angular.element($("pie-chart").eq(chartId)).scope();
+
                 scope.$apply(function () {
-                    
                     if(allCurrentData[chartId][0].additional_color.length){                        
                         var colorcode = allCurrentData[chartId][0].additional_color.splice(allCurrentData[chartId][0].additional_color.length-1, 1)[0];
                         var dataContent = allCurrentData[chartId][0].additional_legend.splice(allCurrentData[chartId][0].additional_legend.length-1, 1)[0];
                         scope.addSlice(colorcode,dataContent);
                         scope.saveState(chartId,allCurrentData[chartId]);
-                        //localStorage.setItem(localStorageId+"_color_"+chartId, adding_storageColor[chartId]); 
-                        //scope.inputTextField[chartId].push({content:"New Arival",colors:colorcode});                      
                     }else{
                         alert("max reached");
                     }
@@ -137,26 +130,38 @@
             function doResetAll(){
                 var scope = angular.element($("pie-chart").eq(0)).scope();
                 scope.$apply(function () {
+                	//allCurrentData[0] = pieSliceColors[0];
+                	console.log(pieSliceColors[0][0].additional_color);
+                	allCurrentData[0][0].additional_color = ['4caf50','ff9900'];
+                	allCurrentData[0][0].additional_legend = ['Physics','Chemistry'];
+                	console.log("before reset pieSliceColors");
+                	console.log(pieSliceColors[0][0]);
                     scope.resetAll(['DC3912','FF9900','109618','990099','3366CC']);
-                    //scope.inputTextField[0] = ;
                 });
 
                 var scope = angular.element($("pie-chart").eq(1)).scope();
                 scope.$apply(function () {
+                	//allCurrentData[1] = pieSliceColors[1];
+                	allCurrentData[1][0].additional_color = ['4caf50','ff9900'];
+                	allCurrentData[1][0].additional_legend = ['Physics','Chemistry'];
                     scope.resetAll(['DC3912','FF9900','109618','990099','3366CC']);
                 });
                 adding_storageColor=[['FF0000','0000FF'],['FF0000','0000FF']];
 
-                localStorage.setItem(localStorageId+"_color_0", adding_storageColor[0]);
-                localStorage.setItem(localStorageId+"_color_1", adding_storageColor[1]);
+               // localStorage.setItem(localStorageId+"_color_0", adding_storageColor[0]);
+               // localStorage.setItem(localStorageId+"_color_1", adding_storageColor[1]);
+            }
+            function storeLegend(chartId,elementId){
+            	var scope = angular.element($("pie-chart").eq(chartId)).scope();
+            	scope.saveToLocalStorage();
             }
             function doRemoveSlice(chartId,elementId,color_code,legendData){
                 var scope = angular.element($("pie-chart").eq(chartId)).scope();
                 allCurrentData[chartId][0].additional_color.push(color_code);
                 allCurrentData[chartId][0].additional_legend.push(legendData);
-                allCurrentData[chartId][0].additional_legend.splice(elementId, 1)[0];
+                //allCurrentData[chartId][0].additional_legend.splice(elementId, 1)[0];
 
-                var removedColor = scope.removeSlice(elementId);
+                scope.removeSlice(elementId);
 
                 
                 //adding_storageColor[chartId].push(removedColor);

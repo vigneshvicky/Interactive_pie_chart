@@ -1,13 +1,11 @@
 var app = angular.module("localStorage", []);
 app.value("localStorageId",localStorageId);
 app.value("sliceColors",pieSliceColors);
-app.value("allPie_data",[]);
 app.value("currentPieData",[[],[]]);
-app.value("addingColors",addingSlice_colors)
 
 app.directive("localStorage",[function () {
     return {
-        controller: ["$scope","localStorageId","allPie_data","sliceColors","currentPieData","addingColors","$rootScope", function ($scope,localStorageId,allPie_data,sliceColors,currentPieData,addingColors,$rootScope) {
+        controller: ["$scope","localStorageId","sliceColors","currentPieData","$rootScope", function ($scope,localStorageId,sliceColors,currentPieData,$rootScope) {
             $scope.myAddingColors=[];
             $scope.inputTextField = [[],[]];
             $scope.getData = function() {
@@ -30,7 +28,7 @@ app.directive("localStorage",[function () {
 			    	$scope.saveState(0,sliceColors[0]);
 			    	$scope.saveState(1,sliceColors[1]);
 			    }
-            	//allPie_data = angular.fromJson(localStorage.getItem(localStorageId));
+
                 return [mydata[0],mydata[1]];
             }
             $scope.splitupData = function(_currentPieData){

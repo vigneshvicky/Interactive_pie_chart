@@ -27,8 +27,6 @@ app.directive("localStorage",[function () {
 			    	var testObj = $scope.splitupData(sliceColors);
 					mydata[0] = testObj[0];
 					mydata[1] = testObj[1];
-			    	//mydata[0] = {colors:sliceColors,percentage:'20,20,20,20,20'};
-			    	//mydata[1] = {colors:sliceColors,percentage:'20,20,20,20,20'};
 			    	$scope.saveState(0,sliceColors[0]);
 			    	$scope.saveState(1,sliceColors[1]);
 			    }

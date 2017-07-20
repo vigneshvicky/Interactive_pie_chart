@@ -3,14 +3,14 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        
-        
+
+
         <title>INTERACTIVE PIE CHART</title>
         <style>
             body{
                 background-color: #DCDCDC;
             }
-            
+
             .text_container{
                 width: 250px;
                 height:auto;
@@ -22,12 +22,12 @@
             .edit_icon{
                 width: 20px;
                 height: 20px;
-                background-color:blue; 
+                background-color:blue;
             }
             .remove_icon{
                 width: 20px;
                 height: 20px;
-                background-color:green; 
+                background-color:green;
             }
             #txt_cotainer_id0{
                 position: relative;
@@ -39,18 +39,26 @@
                 left:20px;
                 height: 100%;
             }
-             input[type="text"]{  
+             input[type="text"]{
               -webkit-user-select: text;  /* Chrome all / Safari all */
               -moz-user-select: text;     /* Firefox all */
               -ms-user-select: text;      /* IE 10+ */
-              user-select: text;          /* Likely future */ 
+              user-select: text;          /* Likely future */
               width:100px;
               height:22px;
               font-size:14px;
             }
-            .circle {width: 10px; height: 10px; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; display:inline-block; }
+            input[type="button"]{
+                border:none;
+                cursor: pointer;
+                border-radius:10px;
+                position:absolute;
+            }
+            .circle {
+                width: 10px; height: 10px; -moz-border-radius:5px; -webkit-border-radius: 5px; border-radius: 5px; display:inline-block; 
+            }
             #legend{
-                
+
                 width:250px;
                 position:relative;
             }
@@ -67,58 +75,51 @@
                 top:100px;
             }
             .pie_chart1{
-                left:240px; 
-                top:100px;          
+                left:240px;
+                top:100px;
             }*/
-            
+
         </style>
     </head>
 
     <body onload="init()">
-        <div id="chartContainer" style="position: absolute;top:100px; display: flex;" ng-app="chart" local-storage ng-init="chartObject = getData()">    
+        <div id="chartContainer" style="position: absolute;top:100px; display: flex;" ng-app="chart" local-storage ng-init="chartObject = getData()">
             <div ng-repeat="data in chartObject" style="display: flex; position: relative; height: 242px;margin-left:60px; ">
                 <pie-chart id="pie_chart{{$index}}" colors="{{data.colors}}" angles={{data.angles}} radius = "120" percentage="{{data.percentage}}" chartid="chart{{$index}}" style="width:242px; height:242px;"></pie-chart>
-                <div class="text_container" id=txt_cotainer_id{{$index}}>
-
-                <div id="legend_{{$index}}">
-                    <div class="data" ng-repeat="legend in data.content track by $index" edit-icon remove-me="doBlur(event)" start-edit="doEdit(event)" color-code = "#{{data.legend_colors[$index]}}" legend-data = "{{data.content[$index]}}" style="height:35px;"></div>
-                </div>
-
-                    <!--<div class="text_leaf" ng-repeat="data in inputTextField[$index]">
-                        <div class="edit_icon"></div>
-                        <input type="text" name="text" value={{data}} placeholder="Text Me" />
-                        <div class="remove_icon"></div>
-                    </div>-->
+                <div class="text_container" id="txt_cotainer_id{{$index}}">
+                    <div id="legend_{{$index}}">
+                        <div class="data" ng-repeat="legend in data.content track by $index" edit-icon remove-me="doBlur(event)" start-edit="doEdit(event)" color-code ="#{{data.legend_colors[$index]}}" legend-data = "{{data.content[$index]}}" style="height:35px;"></div>
+                    </div>
                 </div>
             </div>
-
-
-            
         </div>
-        <input type="button" name="addSlide" onclick="addSlideFunc(0)" value="Add Slice chart 1" /> 
-        <input type="button" name="addSlide" onclick="addSlideFunc(1)" value="Add Slice chart 2" /> 
 
-        <input type="button" name="resetAllSlice" onclick="doResetAll()" value="Reset All" />
+        <input type="button" name="addSlide" onclick="addSlideFunc(0)" value="Add Slice chart 1" style="left:135px; top:70px; background-color: #4caf50;" />
+        <input type="button" name="addSlide" onclick="addSlideFunc(1)" value="Add Slice chart 2" style="left:685px; top:70px; background-color: #4caf50;" />
+
+        <input type="button" name="resetAllSlice" onclick="doResetAll()" value="Reset All" style="left:950px; top:350px; background-color: #ff9900;" />
         <script type="text/javascript">
             //window.localStorage.clear();
             var localStorageId = "pieChartAngle"; //localstorage name
             var activityTitle = "Subject"; //Activity Title
             var legendData = ["English","Tamil","Maths","Science","Social"]; //legend data
-            var pieSliceColors=[[{colors:'DC3912',percentage:"20",angles:0,content:"English",additional_color:['4caf50','ff9900'],additional_legend:['Physics','Chemistry']},{colors:'FF9900',percentage:"20",angles:72,content:"Tamil"},{colors:'109618',percentage:"20",angles:144,content:"Maths"},{colors:'990099',percentage:"20",angles:216,content:"Science"},{colors:'3366CC',percentage:"20",angles:288,content:"Social"}],[{colors:'DC3912',percentage:"20",angles:0,content:"English1",additional_color:['4caf50','ff9900'],additional_legend:['Physics','Chemistry']},{colors:'FF9900',percentage:"20",angles:72,content:"Tamil"},{colors:'109618',percentage:"20",angles:144,content:"Maths"},{colors:'990099',percentage:"20",angles:216,content:"Science"},{colors:'3366CC',percentage:"20",angles:288,content:"Social"}]]; //chart slice colors
+            var pieSliceColors=[[{colors:'DC3912',percentage:"20",angles:-90,content:"English",additional_color:['4caf50','ff9900'],additional_legend:['Physics','Chemistry']},{colors:'FF9900',percentage:"20",angles:-18,content:"Tamil"},{colors:'109618',percentage:"20",angles:54,content:"Maths"},{colors:'990099',percentage:"20",angles:126,content:"Science"},{colors:'3366CC',percentage:"20",angles:198,content:"Social"}],[{colors:'DC3912',percentage:"20",angles:-90,content:"English1",additional_color:['4caf50','ff9900'],additional_legend:['Physics','Chemistry']},{colors:'FF9900',percentage:"20",angles:-18,content:"Tamil"},{colors:'109618',percentage:"20",angles:54,content:"Maths"},{colors:'990099',percentage:"20",angles:126,content:"Science"},{colors:'3366CC',percentage:"20",angles:198,content:"Social"}]];
+//chart slice colors
             var allCurrentData;
-            var addingSlice_colors=[[],['FF0000','0000FF']];
-            var adding_storageColor = [[],[]];
+            var clonedDefaultData = pieSliceColors.concat();
+
+            var defaultColors = ['DC3912','FF9900','109618','990099','3366CC'];
             function storeData_in_globally(allData){
                 allCurrentData = allData;
-                console.log(allCurrentData);
             }
             function addSlideFunc(chartId){
                 var scope = angular.element($("pie-chart").eq(chartId)).scope();
 
                 scope.$apply(function () {
-                    if(allCurrentData[chartId][0].additional_color.length){                        
-                        var colorcode = allCurrentData[chartId][0].additional_color.splice(allCurrentData[chartId][0].additional_color.length-1, 1)[0];
-                        var dataContent = allCurrentData[chartId][0].additional_legend.splice(allCurrentData[chartId][0].additional_legend.length-1, 1)[0];
+
+                    if(allCurrentData[chartId][0].additional_color.length){
+                        var colorcode =allCurrentData[chartId][0].additional_color.splice(allCurrentData[chartId][0].additional_color.length-1,1)[0];
+                        var dataContent = allCurrentData[chartId][0].additional_legend.splice(allCurrentData[chartId][0].additional_legend.length-1,1)[0];
                         scope.addSlice(colorcode,dataContent);
                         scope.saveState(chartId,allCurrentData[chartId]);
                     }else{
@@ -131,25 +132,35 @@
                 var scope = angular.element($("pie-chart").eq(0)).scope();
                 scope.$apply(function () {
                 	//allCurrentData[0] = pieSliceColors[0];
-                	console.log(pieSliceColors[0][0].additional_color);
+                	//console.log(clonedDefaultData[0][0].additional_color);
+                	allCurrentData[0] = clonedDefaultData[0].concat();
                 	allCurrentData[0][0].additional_color = ['4caf50','ff9900'];
                 	allCurrentData[0][0].additional_legend = ['Physics','Chemistry'];
-                	console.log("before reset pieSliceColors");
-                	console.log(pieSliceColors[0][0]);
+                	
+                	$("#legend_0").html("");
+                	for(var i=0;i<defaultColors.length;i++){
+                		allCurrentData[0][i].content = legendData[i];
+                		scope.addLegend(defaultColors[i],legendData[i]);
+                	}
                     scope.resetAll(['DC3912','FF9900','109618','990099','3366CC']);
                 });
 
                 var scope = angular.element($("pie-chart").eq(1)).scope();
                 scope.$apply(function () {
                 	//allCurrentData[1] = pieSliceColors[1];
+                	allCurrentData[1] = clonedDefaultData[1].concat();;
                 	allCurrentData[1][0].additional_color = ['4caf50','ff9900'];
                 	allCurrentData[1][0].additional_legend = ['Physics','Chemistry'];
-                    scope.resetAll(['DC3912','FF9900','109618','990099','3366CC']);
-                });
-                adding_storageColor=[['FF0000','0000FF'],['FF0000','0000FF']];
+                	$("#legend_1").html("");
+                	for(var i=0;i<defaultColors.length;i++){
+                		allCurrentData[1][i].content = legendData[i];
+                		scope.addLegend(defaultColors[i],legendData[i]);
+                	}
+                	
+					scope.resetAll(['DC3912','FF9900','109618','990099','3366CC']);
+                	
 
-               // localStorage.setItem(localStorageId+"_color_0", adding_storageColor[0]);
-               // localStorage.setItem(localStorageId+"_color_1", adding_storageColor[1]);
+                });
             }
             function storeLegend(chartId,elementId){
             	var scope = angular.element($("pie-chart").eq(chartId)).scope();
@@ -159,42 +170,9 @@
                 var scope = angular.element($("pie-chart").eq(chartId)).scope();
                 allCurrentData[chartId][0].additional_color.push(color_code);
                 allCurrentData[chartId][0].additional_legend.push(legendData);
-                //allCurrentData[chartId][0].additional_legend.splice(elementId, 1)[0];
-
                 scope.removeSlice(elementId);
-
-                
-                //adding_storageColor[chartId].push(removedColor);
-                //localStorage.setItem(localStorageId+"_color_"+chartId, adding_storageColor[chartId]);
-                //adding_storageColor[chartId] = localStorage.getItem(localStorageId+"_color_"+chartId).split(",");
-                //scope.inputTextField[chartId].splice(elementId,1);
             }
             function init(){
-                if (typeof(Storage) !== "undefined") {
-                    /*var storageData = localStorage.getItem(localStorageId+"_color_0");
-                    // Store
-                    
-                    if(storageData!=null){
-                        console.log(storageData+" : storageData if condition");
-                        adding_storageColor[0] = localStorage.getItem(localStorageId+"_color_0").split(",");
-                    }else{
-                        adding_storageColor[0] = addingSlice_colors[0];
-                        localStorage.setItem(localStorageId+"_color_0", addingSlice_colors[0]);
-                    }
-
-                    storageData = localStorage.getItem(localStorageId+"_color_1");
-                    // Store
-                    if(storageData){
-                        adding_storageColor[1] = localStorage.getItem(localStorageId+"_color_1").split(",");
-                    }else{
-                        adding_storageColor[1] = addingSlice_colors[1];
-                        localStorage.setItem(localStorageId+"_color_1", addingSlice_colors[1]);
-                    }*/
-
-                } else {
-                    document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Storage...";
-                }
-
                 $("#pie_chart0").css({position:"relative"});
                 $("#pie_chart1").css({position:"relative"});
             }
@@ -202,16 +180,16 @@
         </script>
 
         <script type="text/javascript" src="js/lib/angular.min.js"></script>
-        <script type="text/javascript" src="js/lib/jquery-1.9.1.js"></script>    
+        <script type="text/javascript" src="js/lib/jquery-1.9.1.js"></script>
         <script type="text/javascript" src="js/lib/jquery-ui.js"></script>
         <script type="text/javascript" src="js/custom_jquery.js"></script>
 
-        <script type="text/javascript" src="js/lib/ngTouch.js"></script>    
+        <script type="text/javascript" src="js/lib/ngTouch.js"></script>
         <script type="text/javascript" src="js/local_storage.js"></script>
-        
+
         <script type="text/javascript" src="js/MathLogic.js"></script>
         <script type="text/javascript" src="js/BasicLogic.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
-        
+
     </body>
 </html>

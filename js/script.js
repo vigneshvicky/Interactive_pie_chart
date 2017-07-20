@@ -251,7 +251,6 @@ var app = angular
             }   
             $scope.addSlice = function(colorCode,legend_content){
                 $scope.addLegend(colorCode,legend_content);               
-                //$("#legend_"+$($scope.directiveElement).attr("id").match(/\d/)).append($compile('<div edit-icon="" remove-me="doBlur(event)" start-edit="doEdit(event)" style="height:35px;" color-code="#'+colorCode+'" legend-data="'+legend_content+'"></div>')( $scope ));
                 $scope.colorsData.push(colorCode); 
                 $scope.resetAll($scope.colorsData);
             }
@@ -264,8 +263,6 @@ var app = angular
             $scope.removeSlice = function(index){
                 var splicecolor = $scope.colorsData.splice(index, 1);
                 $scope.resetAll($scope.colorsData);
-                return splicecolor;
-                //$scope.saveState(Number($scope.directiveElement.attr("chartid").match(/\d+/)[0]),allDatas);
             }
             $scope.generateSlice = function(curAngle,id){
                 var nextId = (id==($scope.totalSlice-1))?-1:id;
@@ -280,11 +277,10 @@ var app = angular
                 $scope.default_angles = [];
                 $scope.doInitialSetup();
                 for(var i=0;i<$scope.totalSlice;i++){
-                    $scope.default_angles[i] = (360/$scope.totalSlice)*i;
+                    $scope.default_angles[i] = -90+(360/$scope.totalSlice)*i;
                 }
 
                 $timeout(function(){$scope.updateText();$scope.getStyle();$scope.saveToLocalStorage();},10);
-                //$scope.saveState(Number($scope.directiveElement.attr("chartid").match(/\d+/)[0]),allDatas);
             }
             
 }]).value("mathLogics",new MathLogic());
@@ -295,7 +291,7 @@ app.directive("editIcon",[function(){
         scope:{
             'startEdit':'&','colorCode':'@','legendData':'@','removeMe':'&'
             },
-        template:'<img src="images/edit.png" alt="Edit" ng-mousedown="isEdit=!isEdit; doEdit($event);" style="cursor:pointer;" />&nbsp;&nbsp;<div ng-click="removeMe($event)" style="width:25px; height:25px; background-image:url(images/delete.png); display:inline-flex;"></div><div style="width:100%; display:inline; position:relative; left:10px; top:-7px;"><div class="circle" style="background-color:{{colorCode}};"></div> <div class="legendDataClass" ng-bind="legendData" ng-hide="isEdit">{{legendData}}</div><input ng-show="isEdit" ng-blur="isEdit=false; doBlur($event)" type="text" maxlength="30" style="position:relative; top:-2px; width:160px;" ng-model="legendData"></div>'
+        template:'<img src="images/edit.png" alt="Edit" ng-mousedown="isEdit=!isEdit; doEdit($event);" style="cursor:pointer;" />&nbsp;&nbsp;<div ng-click="removeMe($event)" style="width:25px; height:25px; background-image:url(images/delete.png); display:inline-flex; cursor:pointer;"></div>&nbsp;&nbsp;<div style="width:100%; display:inline; position:relative; top:-7px;"><div class="circle" style="background-color:{{colorCode}};"></div> <div class="legendDataClass" ng-bind="legendData" ng-hide="isEdit">{{legendData}}</div><input ng-show="isEdit" ng-blur="isEdit=false; doBlur($event)" type="text" maxlength="30" style="position:relative; top:-2px; width:160px;" ng-model="legendData"></div>'
     }
 }]).controller("icons",["$scope","$timeout",function($scope,$timeout){
         $scope.doEdit = function(event){
@@ -303,20 +299,16 @@ app.directive("editIcon",[function(){
                 $(event.target).parent().find("input").focus().selectRange(0,$(event.target).parent().find(".legendDataClass").text().length);
             },50);
         }
-        $scope.doBlur = function(event){
-            /*var allSpans = $("#legend").find(".legendDataClass");
-            var len = allSpans.length;
-            for(var i=0;i<len;i++){
-                userService.data.legendNames[i] = allSpans.eq(i).text();
-            }       
-            $rootScope.$broadcast("savestate");*/
-            //Number($($(event.target).parent().parent().parent()).attr("id").match(/\d/)[0])
-            //console.log("focus out");
+        $scope.doBlur = function(event){            
             storeLegend(Number($($(event.target).parent().parent().parent()).attr("id").match(/\d/)[0]),$($(event.target).parent()).index());
-            //$timeout(function(){$scope.updateText();$scope.getStyle();$scope.saveToLocalStorage();},10);
         }
         $scope.removeMe = function(event){
-            doRemoveSlice(Number($($(event.target).parent().parent().parent()).attr("id").match(/\d/)[0]),$($(event.target).parent()).index(),rgb2hex($(event.target).parent().find(".circle").css("background-color")),$(event.target).parent().find(".legendDataClass").text());
-            $(event.target).parent().remove();
+            var id = Number($($(event.target).parent().parent().parent()).attr("id").match(/\d/)[0]);
+        	if(allCurrentData[id].length>5){
+                doRemoveSlice(id,$($(event.target).parent()).index(),rgb2hex($(event.target).parent().find(".circle").css("background-color")),$(event.target).parent().find(".legendDataClass").text());
+                $(event.target).parent().remove();
+            }else{
+                alert("Min reached");
+            }
         }
 }]);

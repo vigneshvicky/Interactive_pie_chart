@@ -61,9 +61,9 @@ var app = angular
             angular.element(document).ready(function() {
                 var scope = angular.element($scope.directiveElement).scope();
                 scope.$apply(function() {
-                    for(var i=0;i<$scope.totalSlice;i++){
-                        $($scope.directiveElement).find(".pie_slice").eq(i).bind("mousedown touchstart",$scope.startMoveSlice);
-                    }
+                    //for(var i=0;i<$scope.totalSlice;i++){
+                        $($scope.directiveElement).find(".pie_slice").bind("mousedown touchstart",$scope.startMoveSlice);
+                    //}
                     scope.getStyle();
                     scope.updateText();
                 })
@@ -264,6 +264,7 @@ var app = angular
                 $scope.addLegend(colorCode,legend_content);
                 $scope.colorsData.push(colorCode);
                 $scope.resetAll($scope.colorsData);
+
             }
             $scope.resetLegend = function(legendId){
                 $("#legend_"+legendId).append($compile('<div edit-icon="" remove-me="doBlur(event)" start-edit="doEdit(event)" style="height:35px;" color-code="#'+colorCode+'" legend-data="'+legend_content+'"></div>')( $scope ));
@@ -291,7 +292,11 @@ var app = angular
                     $scope.default_angles[i] = -90+(360/$scope.totalSlice)*i;
                 }
 
-                $timeout(function(){$scope.updateText();$scope.getStyle();$scope.saveToLocalStorage();},10);
+                $timeout(function(){
+                    $scope.updateText();$scope.getStyle();$scope.saveToLocalStorage();
+                    $($scope.directiveElement).find(".pie_slice").unbind("mousedown touchstart",$scope.startMoveSlice);
+                    $($scope.directiveElement).find(".pie_slice").bind("mousedown touchstart",$scope.startMoveSlice);
+                },10);
             }
 
 }]).value("mathLogics",new MathLogic());
